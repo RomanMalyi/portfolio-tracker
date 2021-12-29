@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PortfolioTracker.DataAccess;
+using PortfolioTracker.Domain.Models;
 
 namespace PortfolioTracker.Api.Controllers
 {
@@ -6,36 +8,31 @@ namespace PortfolioTracker.Api.Controllers
     [ApiController]
     public class AccountsController : ControllerBase
     {
-        // GET: api/<AccountsController>
+        private readonly AccountRepository accountRepository;
+
+        public AccountsController(AccountRepository accountRepository)
+        {
+            this.accountRepository = accountRepository;
+        }
         [HttpGet]
-        public IEnumerable<string> Get()
+        [ProducesResponseType(typeof(Account), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Get([FromQuery] int skip = 0, [FromQuery] int take = 10)
         {
-            return new string[] { "value1", "value2" };
+            return Ok(await accountRepository.Get(skip, take));
         }
 
-        // GET api/<AccountsController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        [ProducesResponseType(typeof(Account), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Get(string id)
         {
-            return "value";
+            return Ok(await accountRepository.Get(id));
         }
 
-        // POST api/<AccountsController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        [ProducesResponseType(typeof(Account), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Post([FromBody] Account account)
         {
-        }
-
-        // PUT api/<AccountsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<AccountsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            return Ok(await accountRepository.Create(account));
         }
     }
 }
