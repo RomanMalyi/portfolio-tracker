@@ -10,10 +10,17 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 
 
 import { AppComponent } from './app.component';
+import { AppRoutingModule } from './app-routing.module';
+import { HomeComponent } from './home/home.component';
+import { PortfolioComponent } from './portfolio/portfolio.component';
+import { SettingsComponent } from './settings/settings.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    HomeComponent,
+    PortfolioComponent,
+    SettingsComponent
   ],
   imports: [
     BrowserModule,
@@ -23,7 +30,8 @@ import { AppComponent } from './app.component';
     MatListModule,
     MatIconModule,
     MatButtonModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]
