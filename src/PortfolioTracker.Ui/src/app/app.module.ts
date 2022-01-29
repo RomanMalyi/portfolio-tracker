@@ -8,10 +8,10 @@ import {MatListModule} from '@angular/material/list';
 import {MatButtonModule} from '@angular/material/button';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { NgxEchartsModule } from 'ngx-echarts';
-
+import { HttpClientModule } from '@angular/common/http';
+import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
-import { AppRoutingModule } from './app-routing.module';
 import { HomeComponent } from './components/home/home.component';
 import { PortfolioComponent } from './components/portfolio/portfolio.component';
 import { SettingsComponent } from './components/settings/settings.component';
@@ -35,7 +35,8 @@ import { SettingsComponent } from './components/settings/settings.component';
     AppRoutingModule,
     NgxEchartsModule.forRoot({
       echarts: () => import('echarts')
-    })
+    }),
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
