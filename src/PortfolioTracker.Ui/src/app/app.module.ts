@@ -7,6 +7,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatListModule} from '@angular/material/list';
 import {MatButtonModule} from '@angular/material/button';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { NgxEchartsModule } from 'ngx-echarts';
 
 
 import { AppComponent } from './app.component';
@@ -31,7 +32,10 @@ import { SettingsComponent } from './settings/settings.component';
     MatIconModule,
     MatButtonModule,
     FlexLayoutModule,
-    AppRoutingModule
+    AppRoutingModule,
+    NgxEchartsModule.forRoot({
+      echarts: () => import('echarts')
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]
