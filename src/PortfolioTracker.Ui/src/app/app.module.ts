@@ -17,13 +17,15 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
 import { PortfolioComponent } from './components/portfolio/portfolio.component';
 import { SettingsComponent } from './components/settings/settings.component';
+import { AnalyticsComponent } from './components/analytics/analytics.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     PortfolioComponent,
-    SettingsComponent
+    SettingsComponent,
+    AnalyticsComponent
   ],
   imports: [
     BrowserModule,

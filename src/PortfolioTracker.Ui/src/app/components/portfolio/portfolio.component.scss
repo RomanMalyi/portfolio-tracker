@@ -1,0 +1,35 @@
+.portfolio-main-container {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+	align-content: stretch;
+    height: 90%;
+}
+
+.portfolio-table-container {
+    width: 90%;
+    position: relative;
+    padding-top: 60px;
+}
+
+.portfolio-table {
+    width: 100%;
+}
+
+.portfolio-card {
+    width: 90%;
+}
+
+.portfolio-button {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: flex-end;
+	align-items: center;
+	align-content: center;
+    width: 100%;
+    padding-top: 20px;
+    padding-bottom: 10px;
+}

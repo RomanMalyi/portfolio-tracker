@@ -1,0 +1,15 @@
+.analytics-main-container {
+    display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-around;
+	align-items: stretch;
+	align-content: center;
+    position: relative;
+    width: 100%;
+
+    & div {
+        width: 45%;
+    }
+}
+
