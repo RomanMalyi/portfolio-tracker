@@ -7,11 +7,11 @@ builder.Services.AddScoped<AccountRepository>();
 builder.Services.AddScoped<UserRepository>();
 
 builder.Services.AddCors(options => {
-    options.AddPolicy("AllowAll", builder =>
+    options.AddPolicy("AllowAll", policyBuilder =>
     {
-        builder.AllowAnyOrigin();
-        builder.AllowAnyHeader();
-        builder.AllowAnyMethod();
+        policyBuilder.AllowAnyOrigin();
+        policyBuilder.AllowAnyHeader();
+        policyBuilder.AllowAnyMethod();
     });
 });
 builder.Services.AddControllers();

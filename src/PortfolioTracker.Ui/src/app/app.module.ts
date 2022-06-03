@@ -6,6 +6,8 @@ import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatIconModule} from '@angular/material/icon';
 import {MatListModule} from '@angular/material/list';
 import {MatButtonModule} from '@angular/material/button';
+import {MatTableModule} from '@angular/material/table';
+import {MatCardModule} from '@angular/material/card';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { HttpClientModule } from '@angular/common/http';
@@ -31,6 +33,8 @@ import { SettingsComponent } from './components/settings/settings.component';
     MatListModule,
     MatIconModule,
     MatButtonModule,
+    MatTableModule,
+    MatCardModule,
     FlexLayoutModule,
     AppRoutingModule,
     NgxEchartsModule.forRoot({

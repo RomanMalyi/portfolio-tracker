@@ -23,7 +23,7 @@ namespace PortfolioTracker.Domain.Models
     {
         CreditCard = 1,
         Cash = 2,
-        CrypoWallet = 3,
+        CryptoWallet = 3,
         Deposit = 4,
         Loan = 5,
         Broker = 6

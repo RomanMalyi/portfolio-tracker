@@ -7,21 +7,21 @@ namespace PortfolioTracker.DataAccess
 {
     public class AccountRepository
     {
-        private static List<Account> accounts = new List<Account>();
+        private static readonly List<Account> Accounts = new List<Account>();
 
         public Task<Account> Get(string id)
         {
-            return Task.FromResult(accounts.FirstOrDefault(u => u.Id.Equals(id)));
+            return Task.FromResult(Accounts.FirstOrDefault(u => u.Id.Equals(id)));
         }
 
         public Task<IEnumerable<Account>> Get(int skip, int take)
         {
-            return Task.FromResult(accounts.Skip(skip).Take(take));
+            return Task.FromResult(Accounts.Skip(skip).Take(take));
         }
 
         public Task<Account> Create(Account account)
         {
-            accounts.Add(account);
+            Accounts.Add(account);
             return Task.FromResult(account);
         }
     }
