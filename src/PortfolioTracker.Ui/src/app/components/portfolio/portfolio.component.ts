@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { IAccount } from 'src/app/models/account';
 import { AccountService } from 'src/app/services/account.service';
+import { AddAccountDialogComponent } from '../add-account-dialog/add-account-dialog.component';
 
 export interface PeriodicElement {
   name: string;
@@ -32,7 +34,7 @@ export class PortfolioComponent implements OnInit {
   displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
   dataSource = ELEMENT_DATA;
 
-  constructor(private accountService: AccountService) {}
+  constructor(private accountService: AccountService, public dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.accountService.getAccounts().subscribe({
@@ -42,6 +44,18 @@ export class PortfolioComponent implements OnInit {
       error: (e) => {
         console.log(e);
       }
+    });
+  }
+
+  openDialog(): void {
+    let createdAccount: any;
+    const dialogRef = this.dialog.open(AddAccountDialogComponent, {
+      width: '80%',
+      data: {},
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      createdAccount = result;
     });
   }
 }
