@@ -11,12 +11,9 @@ namespace PortfolioTracker.Domain.Models
             Id = Guid.NewGuid().ToString();
         }
 
-        public string? Name { get; set; }
+        public string Name { get; set; }
         public decimal Balance { get; set; }
         public AccountType AccountType { get; set; }
-        public Currency Currency { get; set; }
-        public RiskLevel RiskLevel { get; set; }
-        public double InterestRate { get; set; }
     }
 
     public enum AccountType
@@ -26,6 +23,7 @@ namespace PortfolioTracker.Domain.Models
         CryptoWallet = 3,
         Deposit = 4,
         Loan = 5,
-        Broker = 6
+        Broker = 6,
+        Other = 7
     }
 }

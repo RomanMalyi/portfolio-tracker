@@ -6,7 +6,7 @@ namespace PortfolioTracker.Domain.Models
     {
         public string Id { get; }
         public string Name { get; set; }
-        //TODO: main currency should I have sql db?
+        public Currency Currency { get; set; }
 
         public User(string name)
         {

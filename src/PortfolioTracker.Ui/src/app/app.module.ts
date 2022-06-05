@@ -1,23 +1,25 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {MatToolbarModule} from '@angular/material/toolbar';
-import {MatSidenavModule} from '@angular/material/sidenav';
-import {MatIconModule} from '@angular/material/icon';
-import {MatListModule} from '@angular/material/list';
-import {MatButtonModule} from '@angular/material/button';
-import {MatTableModule} from '@angular/material/table';
-import {MatPaginatorModule} from '@angular/material/paginator';
-import {MatCardModule} from '@angular/material/card';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatCardModule } from '@angular/material/card';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
-import {MatDialogModule} from '@angular/material/dialog';
-import {MatStepperModule} from '@angular/material/stepper';
-import {MatFormFieldModule} from '@angular/material/form-field';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
@@ -25,6 +27,9 @@ import { PortfolioComponent } from './components/portfolio/portfolio.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { AnalyticsComponent } from './components/analytics/analytics.component';
 import { AddAccountDialogComponent } from './components/add-account-dialog/add-account-dialog.component';
+import { AddAssetDialogComponent } from './components/add-asset-dialog/add-asset-dialog.component';
+import { AssetsComponent } from './components/assets/assets.component';
+import { TransactionsComponent } from './components/transactions/transactions.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +38,10 @@ import { AddAccountDialogComponent } from './components/add-account-dialog/add-a
     PortfolioComponent,
     SettingsComponent,
     AnalyticsComponent,
-    AddAccountDialogComponent
+    AddAccountDialogComponent,
+    AddAssetDialogComponent,
+    AssetsComponent,
+    TransactionsComponent,
   ],
   imports: [
     BrowserModule,
@@ -53,12 +61,14 @@ import { AddAccountDialogComponent } from './components/add-account-dialog/add-a
     MatFormFieldModule,
     ReactiveFormsModule,
     MatInputModule,
+    FormsModule,
+    MatSelectModule,
     NgxEchartsModule.forRoot({
-      echarts: () => import('echarts')
+      echarts: () => import('echarts'),
     }),
     HttpClientModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
