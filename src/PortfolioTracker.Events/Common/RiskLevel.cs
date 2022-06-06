@@ -1,4 +1,4 @@
-﻿namespace PortfolioTracker.Domain.Models
+﻿namespace PortfolioTracker.Events.Common
 {
     public enum RiskLevel
     {

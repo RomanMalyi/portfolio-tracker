@@ -5,6 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddScoped<AccountRepository>();
 builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<AssetRepository>();
 
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowAll", policyBuilder =>

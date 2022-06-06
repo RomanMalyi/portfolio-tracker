@@ -13,7 +13,7 @@ namespace PortfolioTracker.DataAccess.Repositories
 
         public Task<Account> Get(string id)
         {
-            return Task.FromResult(Accounts.FirstOrDefault(u => u.Id.Equals(id)));
+            return Task.FromResult(Accounts.FirstOrDefault(a => a.Id.Equals(id)));
         }
 
         public Task<PageResult<Account>> Get(string userId, int skip, int take)

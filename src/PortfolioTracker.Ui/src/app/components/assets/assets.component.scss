@@ -1,0 +1,39 @@
+.assets-main-container {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+	align-content: stretch;
+    height: 90%;
+}
+
+.assets-table-container {
+    width: 90%;
+    position: relative;
+    padding-top: 60px;
+}
+
+.assets-table {
+    width: 100%;
+}
+
+.table {
+    width: 100%;
+}
+
+.assets-card {
+    width: 90%;
+}
+
+.assets-button {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: flex-end;
+	align-items: center;
+	align-content: center;
+    width: 100%;
+    padding-top: 20px;
+    padding-bottom: 10px;
+}

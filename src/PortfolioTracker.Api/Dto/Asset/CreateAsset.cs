@@ -1,12 +1,9 @@
 ﻿using PortfolioTracker.Events.Common;
 
-namespace PortfolioTracker.Domain.Models
+namespace PortfolioTracker.Api.Dto.Asset
 {
-    public class Asset
+    public class CreateAsset
     {
-        public string Id { get; set; } = null!;
-        public string AccountId { get; set; } = null!;
-        public string UserId { get; set; } = null!;
         public string Name { get; set; } = null!;
         public Currency Currency { get; set; }
         public RiskLevel RiskLevel { get; set; }

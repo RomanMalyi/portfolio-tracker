@@ -17,6 +17,9 @@ namespace PortfolioTracker.Api.Controllers
             this.accountRepository = accountRepository;
         }
 
+        /// <summary>
+        /// Get all user accounts
+        /// </summary>
         [HttpGet]
         [ProducesResponseType(typeof(PageResult<Account>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get([FromQuery] int skip = 0, [FromQuery] int take = 10)
@@ -26,6 +29,9 @@ namespace PortfolioTracker.Api.Controllers
             return Ok(await accountRepository.Get(userId, skip, take));
         }
 
+        /// <summary>
+        /// Get account by id
+        /// </summary>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(Account), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(string id)

@@ -1,4 +1,4 @@
-﻿using PortfolioTracker.Domain.Models;
+﻿using PortfolioTracker.Events.Common;
 
 namespace PortfolioTracker.Api.Dto.User
 {

@@ -1,4 +1,6 @@
-﻿namespace PortfolioTracker.Domain.Models
+﻿using PortfolioTracker.Events.Common;
+
+namespace PortfolioTracker.Domain.Models
 {
     public class User
     {

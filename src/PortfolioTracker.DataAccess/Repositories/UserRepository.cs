@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using PortfolioTracker.Domain.Models;
+using PortfolioTracker.Events.Common;
 
 namespace PortfolioTracker.DataAccess.Repositories
 {

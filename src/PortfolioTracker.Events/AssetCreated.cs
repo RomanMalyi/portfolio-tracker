@@ -1,10 +1,12 @@
 ﻿using PortfolioTracker.Events.Common;
+using PortfolioTracker.EventStore.Core;
 
-namespace PortfolioTracker.Domain.Models
+namespace PortfolioTracker.Events
 {
-    public class Asset
+    [EventName(nameof(AssetCreated))]
+    public class AssetCreated : IStoredEvent
     {
-        public string Id { get; set; } = null!;
+        public string AssetId { get; set; } = null!;
         public string AccountId { get; set; } = null!;
         public string UserId { get; set; } = null!;
         public string Name { get; set; } = null!;
