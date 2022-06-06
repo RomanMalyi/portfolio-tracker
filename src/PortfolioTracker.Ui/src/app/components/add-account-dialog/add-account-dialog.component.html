@@ -7,7 +7,7 @@
   <br>
   <mat-form-field appearance="fill">
     <mat-label>Категорія</mat-label>
-    <mat-select>
+    <mat-select [(ngModel)]="account.accountType">
       <mat-option *ngFor="let category of categories" [value]="category">
         {{category}}
       </mat-option>

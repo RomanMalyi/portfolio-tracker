@@ -1,3 +1,5 @@
+<h1 class="portfolio-header">Компанії</h1>
+
 <div class="portfolio-main-container">
   <div class="portfolio-table-container">
     <div class="mat-elevation-z8 portfolio-table">
@@ -19,7 +21,7 @@
 
         <ng-container matColumnDef="accountType">
           <th mat-header-cell *matHeaderCellDef> Тип акаунту </th>
-          <td mat-cell *matCellDef="let element"> {{element.accountType}} </td>
+          <td mat-cell *matCellDef="let element"> {{EnumToString(element.accountType)}} </td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="paginationOptions.displayedColumns"></tr>

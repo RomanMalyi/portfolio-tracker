@@ -11,7 +11,7 @@
 .portfolio-table-container {
     width: 90%;
     position: relative;
-    padding-top: 60px;
+    padding-top: 10px;
 }
 
 .portfolio-table {
@@ -36,4 +36,9 @@
     width: 100%;
     padding-top: 20px;
     padding-bottom: 10px;
+}
+
+.portfolio-header {
+    text-align: center;
+    padding-top: 50px;
 }

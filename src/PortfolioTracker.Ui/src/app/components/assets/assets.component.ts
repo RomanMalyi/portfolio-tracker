@@ -2,6 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { ActivatedRoute } from '@angular/router';
+import { Currency } from 'src/app/enums/currency';
+import { RiskLevel } from 'src/app/enums/riskLevel';
 import { IAsset } from 'src/app/models/asset';
 import { IPaginationOptions } from 'src/app/models/paginationOptions';
 import { AssetService } from 'src/app/services/asset.service';
@@ -87,5 +89,13 @@ export class AssetsComponent implements OnInit {
           console.log(e);
         },
       });
+  }
+
+  public RiskLevelEnumToString(value: RiskLevel): string {
+    return RiskLevel[value];
+  }
+
+  public CurrencyEnumToString(value: Currency): string {
+    return Currency[value];
   }
 }

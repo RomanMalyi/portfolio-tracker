@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
+import { AccountType } from 'src/app/enums/accountType';
 import { IAccount } from 'src/app/models/account';
 import { IPaginationOptions } from 'src/app/models/paginationOptions';
 import { AccountService } from 'src/app/services/account.service';
@@ -70,5 +71,9 @@ export class PortfolioComponent implements OnInit {
           console.log(e);
         },
       });
+  }
+
+  public EnumToString(value: AccountType): string {
+    return AccountType[value];
   }
 }
