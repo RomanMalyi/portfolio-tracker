@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PortfolioTracker.DataAccess;
+using PortfolioTracker.Api.Dto.Account;
+using PortfolioTracker.DataAccess.Models;
+using PortfolioTracker.DataAccess.Repositories;
 using PortfolioTracker.Domain.Models;
 
 namespace PortfolioTracker.Api.Controllers
@@ -14,25 +16,34 @@ namespace PortfolioTracker.Api.Controllers
         {
             this.accountRepository = accountRepository;
         }
+
         [HttpGet]
-        [ProducesResponseType(typeof(Account), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PageResult<Account>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get([FromQuery] int skip = 0, [FromQuery] int take = 10)
         {
-            return Ok(await accountRepository.Get(skip, take));
+            //TODO: get from claims
+            string userId = "testUser";
+            return Ok(await accountRepository.Get(userId, skip, take));
         }
 
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(Account), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(string id)
         {
+            //TODO: get userId from claims and validate if we need such method at all
             return Ok(await accountRepository.Get(id));
         }
 
+        /// <summary>
+        /// Creates new account
+        /// </summary>
         [HttpPost]
         [ProducesResponseType(typeof(Account), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Post([FromBody] Account account)
+        public async Task<IActionResult> Post([FromBody] CreateAccount account)
         {
-            return Ok(await accountRepository.Create(account));
+            //TODO: get from claims
+            string userId = "testUser";
+            return Ok(await accountRepository.Create(userId, account.Name, account.AccountType));
         }
     }
 }

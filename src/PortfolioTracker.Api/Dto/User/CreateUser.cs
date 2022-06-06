@@ -1,8 +1,9 @@
-﻿namespace PortfolioTracker.Domain.Models
+﻿using PortfolioTracker.Domain.Models;
+
+namespace PortfolioTracker.Api.Dto.User
 {
-    public class User
+    public class CreateUser
     {
-        public string Id { get; set; } = null!;
         public string Name { get; set; } = null!;
         public Currency MainCurrency { get; set; }
     }

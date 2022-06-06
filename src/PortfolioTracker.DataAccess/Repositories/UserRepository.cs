@@ -1,13 +1,14 @@
-﻿using PortfolioTracker.Domain.Models;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using PortfolioTracker.Domain.Models;
 
-namespace PortfolioTracker.DataAccess
+namespace PortfolioTracker.DataAccess.Repositories
 {
     public class UserRepository
     {
-        private static readonly List<User> Users = new List<User>();
+        private static readonly List<User> Users = new() { new() { Id = "testUser", MainCurrency = Currency.UAH, Name = "Roman Malyi" } };
 
         public Task<User> Get(string id)
         {
@@ -19,9 +20,9 @@ namespace PortfolioTracker.DataAccess
             return Task.FromResult(Users.Skip(skip).Take(take));
         }
 
-        public Task<User> Create(string name)
+        public Task<User> Create(string name, Currency currency)
         {
-            var user = new User(name);
+            User user = new() { Id = Guid.NewGuid().ToString(), Name = name, MainCurrency = currency };
             Users.Add(user);
             return Task.FromResult(user);
         }

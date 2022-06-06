@@ -1,4 +1,4 @@
-using PortfolioTracker.DataAccess;
+using PortfolioTracker.DataAccess.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 

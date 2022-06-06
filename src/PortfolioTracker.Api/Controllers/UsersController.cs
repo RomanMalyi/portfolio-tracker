@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PortfolioTracker.DataAccess;
+using PortfolioTracker.Api.Dto.User;
+using PortfolioTracker.DataAccess.Repositories;
 using PortfolioTracker.Domain.Models;
 
 namespace PortfolioTracker.Api.Controllers
 {
-    //TODO: investigate OData
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -32,9 +32,9 @@ namespace PortfolioTracker.Api.Controllers
 
         [HttpPost]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Post([FromBody] string name)
+        public async Task<IActionResult> Post([FromBody] CreateUser user)
         {
-            return Ok(await userRepository.Create(name));
+            return Ok(await userRepository.Create(user.Name, user.MainCurrency));
         }
     }
 }

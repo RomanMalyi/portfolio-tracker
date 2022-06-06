@@ -1,15 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
 import { IAccount } from 'src/app/models/account';
+import { IPaginationOptions } from 'src/app/models/paginationOptions';
 import { AccountService } from 'src/app/services/account.service';
 import { AddAccountDialogComponent } from '../add-account-dialog/add-account-dialog.component';
-
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-}
 
 @Component({
   selector: 'app-portfolio',
@@ -17,8 +12,15 @@ export interface PeriodicElement {
   styleUrls: ['./portfolio.component.scss'],
 })
 export class PortfolioComponent implements OnInit {
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  public paginationOptions: IPaginationOptions = {
+    displayedColumns: ['position', 'name', 'accountType'],
+    skip: 0,
+    pageSize: 10,
+    totalCount: 0,
+  };
   public accounts: IAccount[] = [];
-  displayedColumns: string[] = ['name', 'accountType'];
 
   constructor(
     private accountService: AccountService,
@@ -26,18 +28,10 @@ export class PortfolioComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.accountService.getAccounts().subscribe({
-      next: (data) => {
-        this.accounts = data;
-      },
-      error: (e) => {
-        console.log(e);
-      },
-    });
+    this.loadAccounts();
   }
 
   public openDialog(): void {
-    let createdAccount: IAccount;
     const dialogRef = this.dialog.open(AddAccountDialogComponent, {
       width: '300px',
       data: {},
@@ -45,14 +39,36 @@ export class PortfolioComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result !== undefined) {
-        this.accounts = [];
-        createdAccount = result;
-        this.accounts.push({
-          name: createdAccount.name,
-          accountType: createdAccount.accountType,
-          id: '0',
+        this.accountService.createAccount(result).subscribe({
+          next: (response) => {
+            this.loadAccounts();
+          },
+          error: (e) => {
+            console.log(e);
+          },
         });
       }
     });
+  }
+
+  public getPagingData(event: any) {
+    this.paginationOptions.pageSize = event.pageSize;
+    this.paginationOptions.skip = event.pageIndex * event.pageSize;
+
+    this.loadAccounts();
+  }
+
+  private loadAccounts() {
+    this.accountService
+      .getAccounts(this.paginationOptions.skip, this.paginationOptions.pageSize)
+      .subscribe({
+        next: (response) => {
+          this.accounts = response.data;
+          this.paginationOptions.totalCount = response.totalCount;
+        },
+        error: (e) => {
+          console.log(e);
+        },
+      });
   }
 }

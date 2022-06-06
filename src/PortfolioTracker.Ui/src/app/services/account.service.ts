@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { IAccount } from '../models/account';
+import { PageResult } from '../models/pageResult';
 
 @Injectable({
   providedIn: 'root',
@@ -18,8 +19,9 @@ export class AccountService {
 
   constructor(private http: HttpClient) {}
 
-  getAccounts(): Observable<IAccount[]> {
-    return this.http.get<IAccount[]>(this.baseUrl, this.httpOptions);
+  getAccounts(skip: number, take: number): Observable<PageResult<IAccount>> {
+    const url = `${this.baseUrl}?skip=${skip}&take=${take}`;
+    return this.http.get<PageResult<IAccount>>(url, this.httpOptions);
   }
 
   createAccount(account: IAccount): Observable<IAccount> {
