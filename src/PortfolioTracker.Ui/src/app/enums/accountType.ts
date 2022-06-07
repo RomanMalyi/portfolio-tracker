@@ -1,9 +1,7 @@
 export enum AccountType {
-  CreditCard = 1,
-  Cash = 2,
-  CrypoWallet = 3,
-  Deposit = 4,
-  Loan = 5,
-  Broker = 6,
-  Other = 7,
+  Bank = 1,
+  Broker = 2,
+  CryptoWallet = 3,
+  Cash = 4,
+  Other = 5,
 }

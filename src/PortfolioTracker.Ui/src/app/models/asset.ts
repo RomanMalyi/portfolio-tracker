@@ -1,3 +1,4 @@
+import { AssetType } from '../enums/assetType';
 import { Currency } from '../enums/currency';
 import { RiskLevel } from '../enums/riskLevel';
 
@@ -6,8 +7,9 @@ export interface IAsset {
   accountId: string;
   userId: string;
   name: string;
+  assetType: AssetType;
   currency: Currency;
-  riskLevel: RiskLevel;
   invested: number;
+  riskLevel: RiskLevel;
   interestRate: number;
 }

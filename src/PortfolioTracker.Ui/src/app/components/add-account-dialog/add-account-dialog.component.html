@@ -2,12 +2,12 @@
 <div mat-dialog-content>
   <mat-form-field appearance="fill">
     <mat-label>Назва</mat-label>
-    <input matInput [(ngModel)]="account.name">
+    <input matInput required [(ngModel)]="account.name">
   </mat-form-field>
   <br>
   <mat-form-field appearance="fill">
     <mat-label>Категорія</mat-label>
-    <mat-select [(ngModel)]="account.accountType">
+    <mat-select required [(ngModel)]="account.accountType">
       <mat-option *ngFor="let category of categories" [value]="category">
         {{category}}
       </mat-option>

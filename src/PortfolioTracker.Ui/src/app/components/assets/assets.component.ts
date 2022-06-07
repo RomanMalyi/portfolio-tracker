@@ -48,7 +48,7 @@ export class AssetsComponent implements OnInit {
 
   public openDialog(): void {
     const dialogRef = this.dialog.open(AddAssetDialogComponent, {
-      width: '300px',
+      width: '40%',
       data: {},
     });
 

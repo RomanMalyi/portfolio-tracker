@@ -43,7 +43,7 @@ namespace PortfolioTracker.Api.Controllers
                 asset.Invested, asset.RiskLevel);
             await assetRepository.Upsert(assetAggregateRoot);
 
-            return Ok(assetAggregateRoot.Get());
+            return Ok(assetAggregateRoot.Get().Value);
         }
     }
 }
