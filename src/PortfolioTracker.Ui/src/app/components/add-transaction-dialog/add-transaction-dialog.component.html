@@ -1,0 +1,35 @@
+<h1 mat-dialog-title>Нова транзакція</h1>
+<div mat-dialog-content>
+    <mat-form-field appearance="fill">
+        <mat-label>Тип</mat-label>
+        <mat-select required [(ngModel)]="transaction.transactionType">
+            <mat-option *ngFor="let type of transactionTypes" [value]="type">
+                {{type}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <br>
+    <mat-form-field appearance="fill">
+        <mat-label>Дата</mat-label>
+        <input matInput required [(ngModel)]="transaction.transactionDate">
+    </mat-form-field>
+    <br>
+    <mat-form-field appearance="fill">
+        <mat-label>Сума</mat-label>
+        <input matInput required [(ngModel)]="transaction.amount">
+    </mat-form-field>
+    <br>
+    <mat-form-field appearance="fill">
+        <mat-label>Курс обміну</mat-label>
+        <input matInput required [(ngModel)]="transaction.exchangeRate">
+    </mat-form-field>
+    <br>
+    <mat-form-field appearance="fill">
+        <mat-label>Опис</mat-label>
+        <input matInput required [(ngModel)]="transaction.description">
+    </mat-form-field>
+</div>
+<div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">Відмінити</button>
+    <button mat-button [mat-dialog-close]="transaction" cdkFocusInitial>Створити</button>
+</div>

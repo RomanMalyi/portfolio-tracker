@@ -29,6 +29,7 @@ import { AnalyticsComponent } from './components/analytics/analytics.component';
 import { AddAccountDialogComponent } from './components/add-account-dialog/add-account-dialog.component';
 import { AddAssetDialogComponent } from './components/add-asset-dialog/add-asset-dialog.component';
 import { AssetsComponent } from './components/assets/assets.component';
+import { AddTransactionDialogComponent } from './components/add-transaction-dialog/add-transaction-dialog.component';
 import { TransactionsComponent } from './components/transactions/transactions.component';
 
 @NgModule({
@@ -41,6 +42,7 @@ import { TransactionsComponent } from './components/transactions/transactions.co
     AddAccountDialogComponent,
     AddAssetDialogComponent,
     AssetsComponent,
+    AddTransactionDialogComponent,
     TransactionsComponent,
   ],
   imports: [

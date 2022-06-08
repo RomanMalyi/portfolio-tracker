@@ -2,7 +2,7 @@
 <div class="assets-main-container">
     <div class="assets-table-container">
         <div class="mat-elevation-z8 portfolio-table">
-            <table mat-table [dataSource]="assets" class="table">
+            <table mat-table [dataSource]="assets" class="assets-table">
 
                 <!--- Note that these columns can be defined in any order.
               The actual rendered columns are set as a property on the row definition" -->
@@ -24,9 +24,9 @@
                     <td mat-cell *matCellDef="let element"> {{CurrencyEnumToString(element.currency)}} </td>
                 </ng-container>
 
-                <ng-container matColumnDef="invested">
-                    <th mat-header-cell *matHeaderCellDef> Інвестовано </th>
-                    <td mat-cell *matCellDef="let element"> {{element.invested}} </td>
+                <ng-container matColumnDef="units">
+                    <th mat-header-cell *matHeaderCellDef> Кількість </th>
+                    <td mat-cell *matCellDef="let element"> {{element.units}} </td>
                 </ng-container>
 
                 <ng-container matColumnDef="riskLevel">
@@ -40,7 +40,8 @@
                 </ng-container>
 
                 <tr mat-header-row *matHeaderRowDef="paginationOptions.displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: paginationOptions.displayedColumns;"></tr>
+                <tr mat-row [routerLink]="['/transactions', row.id]"
+                    *matRowDef="let row; columns: paginationOptions.displayedColumns;"></tr>
             </table>
             <mat-paginator [length]="paginationOptions.totalCount" [pageSize]="paginationOptions.pageSize"
                 [pageSizeOptions]="[5, 10, 25, 100]" (page)="getPagingData($event)" aria-label="Select page">

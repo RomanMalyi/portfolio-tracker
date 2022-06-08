@@ -5,6 +5,7 @@ using PortfolioTracker.Events.Common;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CSharpFunctionalExtensions;
 
 namespace PortfolioTracker.DataAccess.Repositories
 {
@@ -16,15 +17,22 @@ namespace PortfolioTracker.DataAccess.Repositories
         {
             Assets = new List<AssetAR>();
             AssetAR testAsset = new();
-            testAsset.Create("testAsset", "test", "testUser", "Bitcoin", Currency.USD, 10, 1230, RiskLevel.High);
+            testAsset.Create("testAsset", "test", "testUser", "Bitcoin", AssetType.Cryptocurrency, "BTC", 40000, Currency.USD, 0, 1230, RiskLevel.High);
 
             Assets.Add(testAsset);
         }
 
+        public Maybe<AssetAR> GetById(string assetId)
+        {
+            AssetAR? assetAr = Assets.FirstOrDefault(a => a.IsAssetEqual(assetId));
+
+            return assetAr ?? Maybe<AssetAR>.None;
+        }
+
         public Task<PageResult<Asset>> Get(string accountId, int skip, int take)
         {
-            int totalCount = Assets.Count(a => a.IsEqual(accountId));
-            List<AssetAR> result = Assets.Where(a => a.IsEqual(accountId))
+            int totalCount = Assets.Count(a => a.IsAccountEqual(accountId));
+            List<AssetAR> result = Assets.Where(a => a.IsAccountEqual(accountId))
                 .Skip(skip)
                 .Take(take)
                 .ToList();
@@ -39,9 +47,14 @@ namespace PortfolioTracker.DataAccess.Repositories
                 });
         }
 
-        public async Task Upsert(AssetAR assetAr)
+        public async Task Insert(AssetAR assetAr)
         {
             Assets.Add(assetAr);
+        }
+
+        public async Task Update(AssetAR assetAr)
+        {
+            //TODO: add logic, now it will be updated be reference
         }
     }
 }

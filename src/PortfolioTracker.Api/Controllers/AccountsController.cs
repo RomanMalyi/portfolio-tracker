@@ -18,7 +18,7 @@ namespace PortfolioTracker.Api.Controllers
         }
 
         /// <summary>
-        /// Get all user accounts
+        /// Get all accounts for user by id
         /// </summary>
         [HttpGet]
         [ProducesResponseType(typeof(PageResult<Account>), StatusCodes.Status200OK)]

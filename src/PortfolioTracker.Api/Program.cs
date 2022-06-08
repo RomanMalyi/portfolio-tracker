@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<AccountRepository>();
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<AssetRepository>();
+builder.Services.AddScoped<TransactionRepository>();
 
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowAll", policyBuilder =>

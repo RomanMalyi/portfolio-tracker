@@ -5,11 +5,12 @@ import { RiskLevel } from '../enums/riskLevel';
 export interface IAsset {
   id: string;
   accountId: string;
-  userId: string;
   name: string;
   assetType: AssetType;
+  exchangeTicker: string | null;
+  openPrice: number | null;
+  interestRate: number | null;
   currency: Currency;
-  invested: number;
+  units: number;
   riskLevel: RiskLevel;
-  interestRate: number;
 }

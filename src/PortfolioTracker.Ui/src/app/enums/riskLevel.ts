@@ -1,6 +1,5 @@
-export enum RiskLevel
-{
-    Low = 0,
-    Medium = 1,
-    High = 2,
+export enum RiskLevel {
+  Low = 1,
+  Medium = 2,
+  High = 3,
 }

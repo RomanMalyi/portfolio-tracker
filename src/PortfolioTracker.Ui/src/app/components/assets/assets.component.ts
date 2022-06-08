@@ -23,7 +23,7 @@ export class AssetsComponent implements OnInit {
       'name',
       'currency',
       'riskLevel',
-      'invested',
+      'units',
       'interestRate',
     ],
     skip: 0,

@@ -17,8 +17,4 @@
     <ProjectReference Include="..\PortfolioTracker.DataAccess\PortfolioTracker.DataAccess.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Dto\Transaction\" />
-  </ItemGroup>
-
 </Project>

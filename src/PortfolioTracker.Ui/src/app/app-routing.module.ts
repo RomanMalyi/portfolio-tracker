@@ -12,7 +12,7 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'portfolio', component: PortfolioComponent },
   { path: 'assets/:accountId', component: AssetsComponent },
-  { path: 'transactions/:accountId', component: TransactionsComponent },
+  { path: 'transactions/:assetId', component: TransactionsComponent },
   { path: 'analytics', component: AnalyticsComponent },
   { path: 'settings', component: SettingsComponent },
 ];

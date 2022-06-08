@@ -18,23 +18,26 @@ export class AddAssetDialogComponent implements OnInit {
   });
   financeFormGroup = this._formBuilder.group({
     currencyCtrl: ['', Validators.required],
-    investedCtrl: ['', Validators.required],
+    unitsCtrl: ['', Validators.required],
+    exchangeTickerCtrl: [null],
+    openPriceCtrl: [null],
   });
   additionalFormGroup = this._formBuilder.group({
     riskLevelCtrl: ['', Validators.required],
-    interestRateCtrl: ['', Validators.required],
+    interestRateCtrl: [null],
   });
 
   public createdAsset: IAsset = {
     id: '',
     accountId: '',
-    userId: '',
     name: 'string;',
     assetType: AssetType.Other,
     currency: Currency.EUR,
-    invested: 0,
+    units: 0,
     riskLevel: RiskLevel.High,
-    interestRate: 0,
+    interestRate: null,
+    exchangeTicker: null,
+    openPrice: null,
   };
 
   public assetTypes: string[] = [];
@@ -68,11 +71,26 @@ export class AddAssetDialogComponent implements OnInit {
       this.generalFormGroup.controls['typeCtrl'].value;
     this.createdAsset.currency =
       this.financeFormGroup.controls['currencyCtrl'].value;
-    this.createdAsset.invested =
-      this.financeFormGroup.controls['investedCtrl'].value;
+    this.createdAsset.units = this.financeFormGroup.controls['unitsCtrl'].value;
+    this.createdAsset.exchangeTicker =
+      this.financeFormGroup.controls['exchangeTickerCtrl'].value;
+    this.createdAsset.openPrice =
+      this.financeFormGroup.controls['openPriceCtrl'].value;
     this.createdAsset.riskLevel =
       this.additionalFormGroup.controls['riskLevelCtrl'].value;
     this.createdAsset.interestRate =
       this.additionalFormGroup.controls['interestRateCtrl'].value;
+  }
+
+  public showTickerFields(): boolean {
+    return (
+      this.createdAsset.assetType.toString() === AssetType[AssetType.Stocks] ||
+      this.createdAsset.assetType.toString() === AssetType[AssetType.Bonds] ||
+      this.createdAsset.assetType.toString() === AssetType[AssetType.Funds] ||
+      this.createdAsset.assetType.toString() ===
+        AssetType[AssetType.Commodities] ||
+      this.createdAsset.assetType.toString() ===
+        AssetType[AssetType.Cryptocurrency]
+    );
   }
 }

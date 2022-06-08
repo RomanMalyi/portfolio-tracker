@@ -18,7 +18,7 @@
           </mat-select>
         </mat-form-field>
         <div>
-          <button mat-button matStepperNext>Далі</button>
+          <button (click)="addAsset()" mat-button matStepperNext>Далі</button>
         </div>
       </form>
     </mat-step>
@@ -34,12 +34,24 @@
         </mat-form-field>
         <br>
         <mat-form-field appearance="fill">
-          <mat-label>Інвестовано</mat-label>
-          <input matInput formControlName="investedCtrl" placeholder="Інвестовано" required>
+          <mat-label>Кількість</mat-label>
+          <input matInput formControlName="unitsCtrl" placeholder="Інвестовано" required>
         </mat-form-field>
+        <div *ngIf="showTickerFields()">
+          <br>
+          <mat-form-field appearance="fill">
+            <mat-label>Тикер</mat-label>
+            <input matInput formControlName="exchangeTickerCtrl" placeholder="Тикер" required>
+          </mat-form-field>
+          <br>
+          <mat-form-field appearance="fill">
+            <mat-label>Ціна відкриття</mat-label>
+            <input matInput formControlName="openPriceCtrl" placeholder="Ціна відкриття" required>
+          </mat-form-field>
+        </div>
         <div>
           <button mat-button matStepperPrevious>Назад</button>
-          <button mat-button matStepperNext>Далі</button>
+          <button (click)="addAsset()" mat-button matStepperNext>Далі</button>
         </div>
       </form>
     </mat-step>

@@ -11,6 +11,7 @@ import { IAccount } from 'src/app/models/account';
 export class AddAccountDialogComponent implements OnInit {
   public account: IAccount = {
     id: '',
+    userId: '',
     name: '',
     accountType: AccountType.Other,
   };

@@ -7,7 +7,7 @@ using PortfolioTracker.Domain.Models;
 
 namespace PortfolioTracker.Api.Controllers
 {
-    [Route("api/Accounts/{accountId}/[controller]")]
+    [Route("api/accounts/{accountId}/[controller]")]
     [ApiController]
     public class AssetsController : ControllerBase
     {
@@ -39,9 +39,10 @@ namespace PortfolioTracker.Api.Controllers
             string userId = "testUser";
 
             AssetAR assetAggregateRoot = new();
-            assetAggregateRoot.Create(Guid.NewGuid().ToString(), accountId, userId, asset.Name, asset.Currency, asset.InterestRate,
-                asset.Invested, asset.RiskLevel);
-            await assetRepository.Upsert(assetAggregateRoot);
+            assetAggregateRoot.Create(Guid.NewGuid().ToString(), accountId, userId, asset.Name, asset.AssetType, asset.ExchangeTicker,
+                asset.OpenPrice, asset.Currency, asset.InterestRate, asset.Units, asset.RiskLevel);
+
+            await assetRepository.Insert(assetAggregateRoot);
 
             return Ok(assetAggregateRoot.Get().Value);
         }
