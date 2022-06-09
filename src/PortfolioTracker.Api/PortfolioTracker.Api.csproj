@@ -9,12 +9,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="dbup-core" Version="4.6.3" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
+	<ItemGroup>
+		<None Include="SqlDbMigrations/**" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\PortfolioTracker.DataAccess\PortfolioTracker.DataAccess.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="SqlDbMigrations\" />
   </ItemGroup>
 
 </Project>

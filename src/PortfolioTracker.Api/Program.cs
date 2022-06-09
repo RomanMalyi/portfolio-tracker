@@ -1,3 +1,4 @@
+using DbUp;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Options;
 using PortfolioTracker.Api.Infrastructure;
@@ -6,10 +7,15 @@ using PortfolioTracker.DataAccess.Repositories;
 using PortfolioTracker.Events;
 using PortfolioTracker.EventStore;
 using PortfolioTracker.EventStore.Core;
+using DbUp.Engine;
 
 var builder = WebApplication.CreateBuilder(args);
 
+string sqlConnection = builder.Configuration.GetSection("SqlDB")["ConnectionString"];
+RunDbMigrations(sqlConnection);
+
 // Add services to the container.
+builder.Services.AddTransient(_ => new SqlDatabase(sqlConnection));
 builder.Services.AddScoped<AccountRepository>();
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<AssetRepository>();
@@ -34,7 +40,8 @@ builder.Services.AddSingleton<IEventStore, AssetEventStore>(sp =>
     return eventStore;
 });
 
-builder.Services.AddCors(options => {
+builder.Services.AddCors(options =>
+{
     options.AddPolicy("AllowAll", policyBuilder =>
     {
         policyBuilder.AllowAnyOrigin();
@@ -64,3 +71,29 @@ app.UseCors("AllowAll");
 app.MapControllers();
 
 app.Run();
+
+static void RunDbMigrations(string connectionString)
+{
+    Console.WriteLine("DbUp migration starting...");
+
+    var migrationScriptsPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "SqlDbMigrations"));
+
+    EnsureDatabase.For.SqlDatabase(connectionString);
+    var upgrader =
+        DeployChanges.To
+            .SqlDatabase(connectionString)
+            .WithScripts(GetMigrationScripts(migrationScriptsPath))
+            .WithTransaction()
+            .LogToConsole()
+            .Build();
+
+    upgrader.PerformUpgrade();
+
+    Console.WriteLine("DbUp migration finished");
+}
+
+static IReadOnlyCollection<SqlScript> GetMigrationScripts(
+    string path)
+{
+    return (Directory.GetFiles(path, "*.sql", SearchOption.AllDirectories)).OrderBy<string, string>((Func<string, string>)(fullPath => fullPath)).Select<string, SqlScript>(new Func<string, SqlScript>(SqlScript.FromFile)).ToArray<SqlScript>();
+}

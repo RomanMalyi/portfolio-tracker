@@ -14,7 +14,7 @@ namespace PortfolioTracker.Domain.Models
         public string? FromAssetId { get; set; }
         public string? ToAssetId { get; set; }
         public decimal? ExchangeRate { get; set; }
-        public string Description { get; set; } = null!;
+        public string? Description { get; set; } = null!;
         public DateTimeOffset CreatedAt { get; set; }
     }
 }
