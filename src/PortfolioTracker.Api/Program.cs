@@ -1,4 +1,11 @@
+using Microsoft.Azure.Cosmos;
+using Microsoft.Extensions.Options;
+using PortfolioTracker.Api.Infrastructure;
+using PortfolioTracker.DataAccess;
 using PortfolioTracker.DataAccess.Repositories;
+using PortfolioTracker.Events;
+using PortfolioTracker.EventStore;
+using PortfolioTracker.EventStore.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +14,25 @@ builder.Services.AddScoped<AccountRepository>();
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<AssetRepository>();
 builder.Services.AddScoped<TransactionRepository>();
+
+builder.Services.AddCosmosClient(builder.Configuration);
+
+builder.Services.AddSingleton<IEventStore, AssetEventStore>(sp =>
+{
+    var cosmosClient = sp.GetRequiredService<CosmosClient>();
+    var settings = sp.GetRequiredService<IOptions<CosmosDbSettings>>().Value;
+    var database = cosmosClient.CreateDatabaseIfNotExistsAsync(settings.DatabaseId).GetAwaiter().GetResult().Database;
+    var eventStoreSerializer = new JsonStoredEventSerializer(
+        typeof(AssetCreated).Assembly);
+
+    var eventStore = new AssetEventStore(
+        eventStoreSerializer,
+        database);
+
+    eventStore.InitializeAppendEventsStoredProcedure().GetAwaiter().GetResult();
+
+    return eventStore;
+});
 
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowAll", policyBuilder =>

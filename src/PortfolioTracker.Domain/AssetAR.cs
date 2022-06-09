@@ -13,6 +13,7 @@ namespace PortfolioTracker.Domain
     public class AssetAR : AggregateRoot
     {
         public long Version { get; }
+        public string? AssetId => asset?.Id;
 
         private Asset? asset;
 
@@ -24,18 +25,6 @@ namespace PortfolioTracker.Domain
             Version = version;
         }
 
-        //TODO: remove after connect to the CosmosDB
-        public bool IsAccountEqual(string accountId)
-        {
-            return asset != null && asset.AccountId.Equals(accountId);
-        }
-
-        //TODO: remove after connect to the CosmosDB
-        public bool IsAssetEqual(string assetId)
-        {
-            return asset != null && asset.Id.Equals(assetId);
-        }
-
         public Result<Asset, Error> Get()
         {
             if (asset == null)
@@ -45,16 +34,15 @@ namespace PortfolioTracker.Domain
             return asset;
         }
 
-        //TODO: remove id after tests finish
-        public Result<Asset, Error> Create(string id, string accountId, string userId,
+        public Result<Asset, Error> Create(string accountId, string userId,
             string name, AssetType assetType, string? exchangeTicker, decimal? openPrice,
             Currency currency, double? interestRate, decimal units, RiskLevel riskLevel)
         {
             if (asset != null)
                 return AssetErrors.AssetAlreadyCreated;
 
-            Apply(new AssetCreated(id, accountId, userId, name, assetType, exchangeTicker, openPrice, interestRate, units, currency, riskLevel,
-                DateTimeOffset.UtcNow));
+            Apply(new AssetCreated(Guid.NewGuid().ToString(), accountId, userId, name, assetType,
+                exchangeTicker, openPrice, interestRate, units, currency, riskLevel, DateTimeOffset.UtcNow));
 
             return asset!;
         }

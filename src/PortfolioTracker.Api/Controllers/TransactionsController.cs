@@ -42,14 +42,13 @@ namespace PortfolioTracker.Api.Controllers
             //TODO: get from claims
             string userId = "testUser";
 
-            Maybe<AssetAR> assetAggregateRoot = assetRepository.GetById(assetId);
+            Maybe<AssetAR> assetAggregateRoot = await assetRepository.Get(assetId);
             if (assetAggregateRoot.HasNoValue)
                 return BadRequest($"Asset with the id{assetId} not found");
 
-
             var creationResult = assetAggregateRoot.Value.AddTransaction(assetId, userId, transaction.Amount, transaction.Description, transaction.TransactionType,
                 transaction.TransactionDate, transaction.FromAssetId, transaction.ToAssetId, transaction.ExchangeRate);
-            await assetRepository.Update(assetAggregateRoot.Value);
+            await assetRepository.Upsert(assetAggregateRoot.Value);
             transactionRepository.AddTransaction(creationResult.Value);
 
             return Ok(assetAggregateRoot.Value.Get().Value);

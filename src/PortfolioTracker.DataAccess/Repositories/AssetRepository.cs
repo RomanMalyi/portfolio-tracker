@@ -1,8 +1,6 @@
-﻿using PortfolioTracker.DataAccess.Models;
-using PortfolioTracker.Domain;
-using PortfolioTracker.Domain.Models;
-using PortfolioTracker.Events.Common;
-using System.Collections.Generic;
+﻿using PortfolioTracker.Domain;
+using PortfolioTracker.EventStore;
+using PortfolioTracker.EventStore.Core;
 using System.Linq;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
@@ -11,50 +9,23 @@ namespace PortfolioTracker.DataAccess.Repositories
 {
     public class AssetRepository
     {
-        private static readonly IList<AssetAR> Assets;
+        private readonly IEventStore eventStore;
 
-        static AssetRepository()
+        public AssetRepository(IEventStore eventStore)
         {
-            Assets = new List<AssetAR>();
-            AssetAR testAsset = new();
-            testAsset.Create("testAsset", "test", "testUser", "Bitcoin", AssetType.Cryptocurrency, "BTC", 40000, Currency.USD, 0, 1230, RiskLevel.High);
-
-            Assets.Add(testAsset);
+            this.eventStore = eventStore;
         }
 
-        public Maybe<AssetAR> GetById(string assetId)
+        public async Task<Maybe<AssetAR>> Get(string assetId)
         {
-            AssetAR? assetAr = Assets.FirstOrDefault(a => a.IsAssetEqual(assetId));
+            EventStream<IStoredEvent> stream = await eventStore.LoadEventStream(assetId);
 
-            return assetAr ?? Maybe<AssetAR>.None;
+            return !stream.Events.Any() ? Maybe<AssetAR>.None : new AssetAR(stream.Events, ExpectedPosition.GetPosition(stream.Position));
         }
 
-        public Task<PageResult<Asset>> Get(string accountId, int skip, int take)
+        public async Task Upsert(AssetAR assetAr)
         {
-            int totalCount = Assets.Count(a => a.IsAccountEqual(accountId));
-            List<AssetAR> result = Assets.Where(a => a.IsAccountEqual(accountId))
-                .Skip(skip)
-                .Take(take)
-                .ToList();
-
-            return Task.FromResult(
-                new PageResult<Asset>()
-                {
-                    Data = result.Select(e => e.Get().Value).ToList(),
-                    Skip = skip,
-                    Take = take,
-                    TotalCount = totalCount
-                });
-        }
-
-        public async Task Insert(AssetAR assetAr)
-        {
-            Assets.Add(assetAr);
-        }
-
-        public async Task Update(AssetAR assetAr)
-        {
-            //TODO: add logic, now it will be updated be reference
+            await eventStore.AppendToStream(assetAr.AssetId, assetAr.Changes, assetAr.Version);
         }
     }
 }

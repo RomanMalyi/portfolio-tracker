@@ -25,7 +25,9 @@ namespace PortfolioTracker.Api.Controllers
         [ProducesResponseType(typeof(PageResult<Asset>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get([FromRoute] string accountId, [FromQuery] int skip = 0, [FromQuery] int take = 10)
         {
-            return Ok(await assetRepository.Get(accountId, skip, take));
+            //TODO: fix after MSSQL read model
+           // return Ok(await assetRepository.Get(accountId, skip, take));
+           return Ok();
         }
 
         /// <summary>
@@ -39,10 +41,10 @@ namespace PortfolioTracker.Api.Controllers
             string userId = "testUser";
 
             AssetAR assetAggregateRoot = new();
-            assetAggregateRoot.Create(Guid.NewGuid().ToString(), accountId, userId, asset.Name, asset.AssetType, asset.ExchangeTicker,
+            assetAggregateRoot.Create(accountId, userId, asset.Name, asset.AssetType, asset.ExchangeTicker,
                 asset.OpenPrice, asset.Currency, asset.InterestRate, asset.Units, asset.RiskLevel);
 
-            await assetRepository.Insert(assetAggregateRoot);
+            await assetRepository.Upsert(assetAggregateRoot);
 
             return Ok(assetAggregateRoot.Get().Value);
         }
