@@ -22,14 +22,14 @@ namespace PortfolioTracker.DataAccess
         private readonly IStoredEventSerializer storedEventSerializer;
 
         private const string StoredProcedureId = "AppendEvents";
-        private const string ContainerId = "AssetEvents";
+        public const string AssetsContainerId = "AssetEvents";
         private readonly JsonSerializerSettings jsonSerializer;
 
         public AssetEventStore(IStoredEventSerializer storedEventSerializer, Database database)
         {
             this.storedEventSerializer = storedEventSerializer;
             InitializeAssetEventStoreContainer(database).GetAwaiter().GetResult();
-            container = database.GetContainer(ContainerId);
+            container = database.GetContainer(AssetsContainerId);
 
             jsonSerializer = new JsonSerializerSettings
             {
@@ -40,7 +40,7 @@ namespace PortfolioTracker.DataAccess
 
         public async Task InitializeAssetEventStoreContainer(Database database)
         {
-            await database.CreateContainerIfNotExistsAsync(ContainerId, "/StreamId");
+            await database.CreateContainerIfNotExistsAsync(AssetsContainerId, "/StreamId");
         }
 
         public async Task InitializeAppendEventsStoredProcedure()

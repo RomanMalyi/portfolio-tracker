@@ -11,10 +11,12 @@ namespace PortfolioTracker.Api.Controllers
     [ApiController]
     public class AssetsController : ControllerBase
     {
+        private readonly AssetArRepository assetArRepository;
         private readonly AssetRepository assetRepository;
 
-        public AssetsController(AssetRepository assetRepository)
+        public AssetsController(AssetArRepository assetArRepository, AssetRepository assetRepository)
         {
+            this.assetArRepository = assetArRepository;
             this.assetRepository = assetRepository;
         }
 
@@ -25,9 +27,7 @@ namespace PortfolioTracker.Api.Controllers
         [ProducesResponseType(typeof(PageResult<Asset>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get([FromRoute] string accountId, [FromQuery] int skip = 0, [FromQuery] int take = 10)
         {
-            //TODO: fix after MSSQL read model
-           // return Ok(await assetRepository.Get(accountId, skip, take));
-           return Ok();
+            return Ok(await assetRepository.Get(accountId, skip, take));
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace PortfolioTracker.Api.Controllers
             assetAggregateRoot.Create(accountId, userId, asset.Name, asset.AssetType, asset.ExchangeTicker,
                 asset.OpenPrice, asset.Currency, asset.InterestRate, asset.Units, asset.RiskLevel);
 
-            await assetRepository.Upsert(assetAggregateRoot);
+            await assetArRepository.Upsert(assetAggregateRoot);
 
             return Ok(assetAggregateRoot.Get().Value);
         }

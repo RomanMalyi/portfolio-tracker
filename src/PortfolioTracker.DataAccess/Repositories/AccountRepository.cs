@@ -1,43 +1,68 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using CSharpFunctionalExtensions;
 using PortfolioTracker.DataAccess.Models;
 using PortfolioTracker.Domain.Models;
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace PortfolioTracker.DataAccess.Repositories
 {
     public class AccountRepository
     {
-        private static readonly List<Account> Accounts = new() { new Account { Id = "test", UserId = "testUser", AccountType = AccountType.Broker, Name = "FF" } };
+        private const string AccountTableName = "dbo.Account";
 
-        public Task<Account> Get(string id)
+        private readonly SqlDatabase sqlDatabase;
+
+        public AccountRepository(SqlDatabase sqlDatabase)
         {
-            return Task.FromResult(Accounts.FirstOrDefault(a => a.Id.Equals(id)));
+            this.sqlDatabase = sqlDatabase;
         }
 
-        public Task<PageResult<Account>> Get(string userId, int skip, int take)
+        public Task<Maybe<Account>> Get(string id)
         {
-            List<Account> result = Accounts.Where(a => a.UserId.Equals(userId, StringComparison.OrdinalIgnoreCase))
-                .Skip(skip)
-                .Take(take)
-                .ToList();
-
-            return Task.FromResult(
-                new PageResult<Account>()
-                {
-                    Data = result,
-                    Skip = skip,
-                    Take = take,
-                    TotalCount = Accounts.Count()
-                });
+            var query = @$"Select * from {AccountTableName} where Id = '{id}'";
+            return sqlDatabase.GetSingleOrDefault<Account>(query, CancellationToken.None);
         }
 
-        public Task<Account> Create(string userId, string name, AccountType type)
+        public async Task<PageResult<Account>> Get(string userId, int skip, int take)
         {
-            Account account = new() { Id = Guid.NewGuid().ToString(), UserId = userId, AccountType = type, Name = name };
-            Accounts.Add(account);
-            return Task.FromResult(account);
+            int totalCount = await sqlDatabase.ExecuteScalar<int>(@$"Select count(*) from {AccountTableName} where UserId = '{userId}'", CancellationToken.None);
+
+            var query = @$"Select * from {AccountTableName} where UserId = '{userId}'
+                            ORDER BY Id
+                            OFFSET {skip} ROWS
+                            FETCH NEXT {take} ROWS ONLY;";
+
+            var result = await sqlDatabase.Query<Account>(query, CancellationToken.None);
+
+            return new PageResult<Account>()
+            {
+                Data = result.ToList(),
+                Skip = skip,
+                Take = take,
+                TotalCount = totalCount
+            };
+        }
+
+        public async Task<Account> Create(string userId, string name, AccountType type)
+        {
+            string id = Guid.NewGuid().ToString();
+            DateTimeOffset createdAt = DateTimeOffset.UtcNow;
+            var command = @$"Insert into {AccountTableName}
+                ([Id], [UserId], [Name], [AccountType], [CreatedAt] )
+                    Values
+                ('{id}', '{userId}', '{name}', '{type}', '{createdAt}')";
+
+            await sqlDatabase.ExecuteNonQuery(command, CancellationToken.None);
+            return new Account { Id = id, AccountType = type, CreatedAt = createdAt, Name = name, UserId = userId };
+        }
+
+        public async Task Delete(string id)
+        {
+            var command = $"Delete from {AccountTableName} where [Id] = '{id}'";
+
+            await sqlDatabase.ExecuteNonQuery(command, CancellationToken.None);
         }
     }
 }

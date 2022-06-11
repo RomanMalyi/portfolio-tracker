@@ -47,7 +47,7 @@ namespace PortfolioTracker.Domain
             return asset!;
         }
 
-        public Result<TransactionAdded, Error> AddTransaction(string assetId, string userId,
+        public Result<Asset, Error> AddTransaction(string assetId, string userId,
             decimal amount, string description, TransactionType transactionType, DateTimeOffset transactionDate,
             string? fromAssetId, string? toAssetId, decimal? exchangeRate)
         {
@@ -56,12 +56,10 @@ namespace PortfolioTracker.Domain
 
             //TODO: add validation for amount>0, userid = asset userId, transfer <=0 fromId and toId etc.
 
-            //TODO: return basket here after transaction read model is created
-            var @event = new TransactionAdded(Guid.NewGuid().ToString(), assetId, userId, transactionType,
-                transactionDate, amount, fromAssetId, toAssetId, exchangeRate, description, DateTimeOffset.UtcNow);
-            Apply(@event);
+            Apply(new TransactionAdded(Guid.NewGuid().ToString(), assetId, userId, transactionType,
+                transactionDate, amount, fromAssetId, toAssetId, exchangeRate, description, DateTimeOffset.UtcNow));
 
-            return @event;
+            return asset;
         }
 
         private void When(AssetCreated @event)

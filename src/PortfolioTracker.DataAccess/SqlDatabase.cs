@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
@@ -12,12 +13,10 @@ namespace PortfolioTracker.DataAccess
     public class SqlDatabase
     {
         private const int CommandTimeoutSeconds = 3000;
-        private readonly SqlConnection defaultConnection;
         private readonly string connectionString;
 
         public SqlDatabase(string connectionString)
         {
-            defaultConnection = new SqlConnection(connectionString);
             this.connectionString = connectionString;
         }
 
@@ -43,7 +42,10 @@ namespace PortfolioTracker.DataAccess
             var result = await connection.QuerySingleOrDefaultAsync<T>(command);
 
             if (existingConnection == null)
+            {
                 await connection.CloseAsync();
+                connection.Dispose();
+            }
 
             return result ?? Maybe<T>.None;
         }
@@ -60,19 +62,13 @@ namespace PortfolioTracker.DataAccess
         public async Task<IEnumerable<T>> Query<T>(
             string query,
             CancellationToken cancellationToken,
-            bool useDefaultConnection = false,
             SqlConnection? existingConnection = null,
             DbTransaction? transaction = null,
             object? queryParameters = null)
         {
-            var connection = existingConnection ?? defaultConnection;
+            var connection = existingConnection ?? new SqlConnection(connectionString);
             if (existingConnection == null)
-            {
-                if (!useDefaultConnection)
-                    connection = new SqlConnection(connectionString);
-
                 await connection.OpenAsync(cancellationToken);
-            }
 
             var command = new CommandDefinition(
                 query,
@@ -85,7 +81,10 @@ namespace PortfolioTracker.DataAccess
             var result = await connection.QueryAsync<T>(command);
 
             if (existingConnection == null)
+            {
                 await connection.CloseAsync();
+                connection.Dispose();
+            }
 
             return result;
         }
@@ -112,7 +111,10 @@ namespace PortfolioTracker.DataAccess
             await connection.QueryAsync(command);
 
             if (existingConnection == null)
+            {
                 await connection.CloseAsync();
+                connection.Dispose();
+            }
         }
 
         public async Task<TResult> ExecuteScalar<TResult>(
@@ -137,21 +139,12 @@ namespace PortfolioTracker.DataAccess
             var result = await connection.ExecuteScalarAsync<TResult>(command);
 
             if (existingConnection == null)
+            {
                 await connection.CloseAsync();
+                connection.Dispose();
+            }
 
             return result;
-        }
-
-        public SqlConnection CreateSqlConnection()
-        {
-            return new SqlConnection(connectionString);
-        }
-
-        public string GetDatabaseName() => defaultConnection.Database;
-
-        public void Dispose()
-        {
-            defaultConnection.Dispose();
         }
     }
 }

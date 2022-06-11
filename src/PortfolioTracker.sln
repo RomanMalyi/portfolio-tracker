@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortfolioTracker.EventStore
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortfolioTracker.Events", "PortfolioTracker.Events\PortfolioTracker.Events.csproj", "{F4995886-B42C-46A7-AB6E-E56DB5E9C0B9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortfolioTracker.ChangeFeed", "PortfolioTracker.ChangeFeed\PortfolioTracker.ChangeFeed.csproj", "{70C84FC2-7FB3-4ED3-9CA5-A341768705C3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{F4995886-B42C-46A7-AB6E-E56DB5E9C0B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F4995886-B42C-46A7-AB6E-E56DB5E9C0B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F4995886-B42C-46A7-AB6E-E56DB5E9C0B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70C84FC2-7FB3-4ED3-9CA5-A341768705C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70C84FC2-7FB3-4ED3-9CA5-A341768705C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70C84FC2-7FB3-4ED3-9CA5-A341768705C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70C84FC2-7FB3-4ED3-9CA5-A341768705C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

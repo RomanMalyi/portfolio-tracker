@@ -13,13 +13,13 @@ namespace PortfolioTracker.Api.Controllers
     public class TransactionsController : ControllerBase
     {
         private readonly TransactionRepository transactionRepository;
-        private readonly AssetRepository assetRepository;
+        private readonly AssetArRepository assetArRepository;
 
         public TransactionsController(TransactionRepository transactionRepository,
-            AssetRepository assetRepository)
+            AssetArRepository assetArRepository)
         {
             this.transactionRepository = transactionRepository;
-            this.assetRepository = assetRepository;
+            this.assetArRepository = assetArRepository;
         }
 
         /// <summary>
@@ -42,14 +42,14 @@ namespace PortfolioTracker.Api.Controllers
             //TODO: get from claims
             string userId = "testUser";
 
-            Maybe<AssetAR> assetAggregateRoot = await assetRepository.Get(assetId);
+            Maybe<AssetAR> assetAggregateRoot = await assetArRepository.Get(assetId);
             if (assetAggregateRoot.HasNoValue)
                 return BadRequest($"Asset with the id{assetId} not found");
 
+            //TODO: check result
             var creationResult = assetAggregateRoot.Value.AddTransaction(assetId, userId, transaction.Amount, transaction.Description, transaction.TransactionType,
                 transaction.TransactionDate, transaction.FromAssetId, transaction.ToAssetId, transaction.ExchangeRate);
-            await assetRepository.Upsert(assetAggregateRoot.Value);
-            transactionRepository.AddTransaction(creationResult.Value);
+            await assetArRepository.Upsert(assetAggregateRoot.Value);
 
             return Ok(assetAggregateRoot.Value.Get().Value);
         }
