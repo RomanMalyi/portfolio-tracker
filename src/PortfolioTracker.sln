@@ -11,9 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortfolioTracker.DataAccess
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortfolioTracker.EventStore", "PortfolioTracker.EventStore\PortfolioTracker.EventStore.csproj", "{8084741B-8C10-40B2-AB5F-84EB6AF92020}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortfolioTracker.Events", "PortfolioTracker.Events\PortfolioTracker.Events.csproj", "{F4995886-B42C-46A7-AB6E-E56DB5E9C0B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortfolioTracker.Events", "PortfolioTracker.Events\PortfolioTracker.Events.csproj", "{F4995886-B42C-46A7-AB6E-E56DB5E9C0B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortfolioTracker.ChangeFeed", "PortfolioTracker.ChangeFeed\PortfolioTracker.ChangeFeed.csproj", "{70C84FC2-7FB3-4ED3-9CA5-A341768705C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortfolioTracker.ChangeFeed", "PortfolioTracker.ChangeFeed\PortfolioTracker.ChangeFeed.csproj", "{70C84FC2-7FB3-4ED3-9CA5-A341768705C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortfolioTracker.Market.Api", "PortfolioTracker.Market.Api\PortfolioTracker.Market.Api.csproj", "{ADB2F033-22AD-489C-8393-9FBB4925C3B7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{70C84FC2-7FB3-4ED3-9CA5-A341768705C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{70C84FC2-7FB3-4ED3-9CA5-A341768705C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{70C84FC2-7FB3-4ED3-9CA5-A341768705C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADB2F033-22AD-489C-8393-9FBB4925C3B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADB2F033-22AD-489C-8393-9FBB4925C3B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADB2F033-22AD-489C-8393-9FBB4925C3B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADB2F033-22AD-489C-8393-9FBB4925C3B7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

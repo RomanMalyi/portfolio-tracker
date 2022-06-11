@@ -4,6 +4,7 @@
     {
         UAH = 1,
         USD = 2,
-        EUR = 3
+        EUR = 3,
+        PLN = 4,
     }
 }
