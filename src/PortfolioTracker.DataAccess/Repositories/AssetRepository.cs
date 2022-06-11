@@ -19,11 +19,33 @@ namespace PortfolioTracker.DataAccess.Repositories
             this.sqlDatabase = sqlDatabase;
         }
 
-        public async Task<PageResult<Asset>> Get(string accountId, int skip, int take)
+        public async Task<PageResult<Asset>> GetByAccount(string accountId, int skip, int take)
         {
             int totalCount = await sqlDatabase.ExecuteScalar<int>(@$"Select count(*) from {AssetTableName} where AccountId = '{accountId}'", CancellationToken.None);
 
             var query = @$"Select * from {AssetTableName} where AccountId = '{accountId}'
+                            ORDER BY Id
+                            OFFSET {skip} ROWS
+                            FETCH NEXT {take} ROWS ONLY;";
+
+            var result = await sqlDatabase.Query<Asset>(query, CancellationToken.None);
+
+            return
+                new PageResult<Asset>()
+                {
+                    Data = result.ToList(),
+                    Skip = skip,
+                    Take = take,
+                    TotalCount = totalCount
+                };
+        }
+
+
+        public async Task<PageResult<Asset>> GetByUser(string userId, int skip, int take)
+        {
+            int totalCount = await sqlDatabase.ExecuteScalar<int>(@$"Select count(*) from {AssetTableName} where UserId = '{userId}'", CancellationToken.None);
+
+            var query = @$"Select * from {AssetTableName} where UserId = '{userId}'
                             ORDER BY Id
                             OFFSET {skip} ROWS
                             FETCH NEXT {take} ROWS ONLY;";

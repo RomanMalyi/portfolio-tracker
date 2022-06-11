@@ -27,7 +27,7 @@ namespace PortfolioTracker.Api.Controllers
         [ProducesResponseType(typeof(PageResult<Asset>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get([FromRoute] string accountId, [FromQuery] int skip = 0, [FromQuery] int take = 10)
         {
-            return Ok(await assetRepository.Get(accountId, skip, take));
+            return Ok(await assetRepository.GetByAccount(accountId, skip, take));
         }
 
         /// <summary>

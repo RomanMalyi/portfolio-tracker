@@ -53,7 +53,6 @@ namespace PortfolioTracker.DataAccess
         /// <typeparam name="T">Result type</typeparam>
         /// <param name="query"> Sql query to be executed</param>
         /// <param name="cancellationToken">Cancellation token</param>
-        /// <param name="useDefaultConnection">SqlDatabase will use the same(one per instance of a repository)
         /// - default connection for each query, can't be used in parallel</param>
         /// <param name="existingConnection">A connection that managed outside SQL database class</param>
         /// <param name="transaction">Transaction for SQL query</param>

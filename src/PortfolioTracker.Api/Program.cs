@@ -79,6 +79,7 @@ void InitializeCosmosDb(IConfiguration configuration)
     using var cosmos = new CosmosClient(configuration.GetSection("CosmosDb")["ConnectionString"]);
     Database database = cosmos.CreateDatabaseIfNotExistsAsync(configuration.GetSection("CosmosDb")["DatabaseId"]).GetAwaiter().GetResult().Database;
     database.CreateContainerIfNotExistsAsync(AssetEventStore.AssetsContainerId, "/StreamId").GetAwaiter().GetResult();
+    database.CreateContainerIfNotExistsAsync(SnapshotRepository.SnapshotsContainerId, "/UserId").GetAwaiter().GetResult();
 }
 
 static void RunDbMigrations(string connectionString)

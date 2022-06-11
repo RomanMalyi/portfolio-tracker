@@ -7,6 +7,7 @@ using PortfolioTracker.Events;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Azure.Cosmos.Serialization.HybridRow.Layouts;
 using PortfolioTracker.DataAccess;
 
 namespace PortfolioTracker.ChangeFeed
@@ -51,6 +52,8 @@ namespace PortfolioTracker.ChangeFeed
                             {
                                 TransactionAdded added = JsonConvert.DeserializeObject<TransactionAdded>(@event.Data.ToString()!);
                                 await transactionRepository.Create(added!);
+                                //TODO: need to update Asset info
+                                //TODO: regenerate snapshot
                                 break;
                             }
                         }

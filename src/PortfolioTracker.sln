@@ -17,6 +17,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortfolioTracker.ChangeFeed
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortfolioTracker.Market.Api", "PortfolioTracker.Market.Api\PortfolioTracker.Market.Api.csproj", "{ADB2F033-22AD-489C-8393-9FBB4925C3B7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortfolioTracker.SnapshotTrigger", "PortfolioTracker.SnapshotGeneration\PortfolioTracker.SnapshotTrigger.csproj", "{DC1E0088-DCA0-452D-B963-A9CD163E3F49}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortfolioTracker.SnapshotGenerator", "PortfolioTracker.SnapshotGenerator\PortfolioTracker.SnapshotGenerator.csproj", "{18B6FAA4-8D41-4EB4-BE12-3E92E3AA1684}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +55,14 @@ Global
 		{ADB2F033-22AD-489C-8393-9FBB4925C3B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ADB2F033-22AD-489C-8393-9FBB4925C3B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ADB2F033-22AD-489C-8393-9FBB4925C3B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC1E0088-DCA0-452D-B963-A9CD163E3F49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC1E0088-DCA0-452D-B963-A9CD163E3F49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC1E0088-DCA0-452D-B963-A9CD163E3F49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC1E0088-DCA0-452D-B963-A9CD163E3F49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18B6FAA4-8D41-4EB4-BE12-3E92E3AA1684}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18B6FAA4-8D41-4EB4-BE12-3E92E3AA1684}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18B6FAA4-8D41-4EB4-BE12-3E92E3AA1684}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18B6FAA4-8D41-4EB4-BE12-3E92E3AA1684}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
