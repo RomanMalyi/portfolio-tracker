@@ -31,81 +31,113 @@ namespace PortfolioTracker.SnapshotGenerator
             AssetRepository assetRepository = new(sqlDatabase);
             AccountRepository accountRepository = new(sqlDatabase);
 
+            //TODO: if date is not today than we need to query assetAr with date parametr
             var assetsResult = await assetRepository.GetByUser(trigger.UserId, 0, 10000);
+            var accountsResult = await accountRepository.Get(trigger.UserId, 0, 1000);
 
-            //var accountsResult =
+            string[] allUsedTickers = assetsResult.Data.Where(a => a.ExchangeTicker != null).Select(a => a.ExchangeTicker).Distinct().ToArray();
+
+            MarketHelper marketHelper = new();
+            List<CurrencyRate> currencies = await marketHelper.GetCurrencies();
+            List<ShortMarketResponse> marketValues = await marketHelper.GetTickers(allUsedTickers);
+            AssetCalculator assetCalculator = new AssetCalculator(currencies, marketValues);
+
+            //TODO: calculator
+            var totalAssetsValue = assetCalculator.Sum(assetsResult.Data);
 
             Snapshot snapshot = new Snapshot()
             {
                 Id = $"{trigger.UserId}-{trigger.Date:yyyy-MM-dd}",
                 UserId = trigger.UserId,
                 GenerationTime = DateTimeOffset.UtcNow,
-                CurrencyAnalytics = GenerateCurrencyAnalytics(assetsResult.Data),
-                //AccountAnalytics = GenerateAccountAnalytics(assetsResult.Data),
-                //AssetTypeAnalytics = GenerateAssetTypeAnalytics(assetsResult.Data),
-                //RiskLevelAnalytics = GenerateRiskLevelAnalytics(assetsResult.Data),
-                //TransactionTypeAnalytics = GenerateTransactionTypeAnalytics(assetsResult.Data)
+                TotalAmount = totalAssetsValue,
+                CurrencyAnalytics = GenerateCurrencyAnalytics(assetCalculator, assetsResult.Data, totalAssetsValue),
+                AccountAnalytics = GenerateAccountAnalytics(assetCalculator, assetsResult.Data, accountsResult.Data, totalAssetsValue),
+                AssetTypeAnalytics = GenerateAssetTypeAnalytics(assetCalculator, assetsResult.Data, totalAssetsValue),
+                RiskLevelAnalytics = GenerateRiskLevelAnalytics(assetCalculator, assetsResult.Data, totalAssetsValue)
             };
 
             await snapshotRepository.Upsert(snapshot);
-
         }
 
-        private List<CurrencyAnalytics> GenerateCurrencyAnalytics(List<Asset> assets)
+        private List<CurrencyAnalytics> GenerateCurrencyAnalytics(AssetCalculator assetCalculator, List<Asset> assets, decimal totalPortfolioValue)
         {
-            var totalAssetsValue = assets.Sum(a => a.Units);
             var groupByCurrency = assets.GroupBy(a => a.Currency);
             var result = new List<CurrencyAnalytics>(groupByCurrency.Count());
             foreach (var group in groupByCurrency)
             {
-                var groupTotal = group.Sum(g => g.Units);
+                var groupTotal = assetCalculator.Sum(group.ToList());
 
                 result.Add(new CurrencyAnalytics()
                 {
                     Currency = group.Key,
                     PortfolioAmount = groupTotal,
-                    PortfolioPercent = (float)(groupTotal / totalAssetsValue)
+                    PortfolioPercent = (float)(groupTotal / totalPortfolioValue)
                 });
             }
 
             return result;
         }
 
-        private List<AccountAnalytics> GenerateAccountAnalytics(List<Asset> assets)
+        private List<AccountAnalytics> GenerateAccountAnalytics(AssetCalculator assetCalculator, List<Asset> assets, List<Account> accounts, decimal totalPortfolioValue)
         {
-            //TODO: add logic for converting to main currency
-            var totalAssetsValue = assets.Sum(a => a.Units);
-            var groupByCurrency = assets.GroupBy(a => a.AccountId);
-            var result = new List<AccountAnalytics>(groupByCurrency.Count());
-            foreach (var group in groupByCurrency)
+            var groupByAccount = assets.GroupBy(a => a.AccountId);
+            var result = new List<AccountAnalytics>(groupByAccount.Count());
+            foreach (var group in groupByAccount)
             {
-                var groupTotal = group.Sum(g => g.Units);
+                var groupTotal = assetCalculator.Sum(group.ToList());
+                var account = accounts.FirstOrDefault(a => a.Id.Equals(group.Key, StringComparison.OrdinalIgnoreCase));
+                if (account == null) continue;
 
                 result.Add(new AccountAnalytics()
                 {
                     AccountId = group.Key,
-                    //AccountType = ,
+                    AccountType = account.AccountType,
+                    AccountName = account.Name,
                     PortfolioAmount = groupTotal,
-                    PortfolioPercent = (float)(groupTotal / totalAssetsValue)
+                    PortfolioPercent = (float)(groupTotal / totalPortfolioValue)
                 });
             }
 
             return result;
         }
 
-        private List<AssetTypeAnalytics> GenerateAssetTypeAnalytics(List<Asset> assets)
+        private List<AssetTypeAnalytics> GenerateAssetTypeAnalytics(AssetCalculator assetCalculator, List<Asset> assets, decimal totalPortfolioValue)
         {
-            throw new NotImplementedException();
+            var groupByAssetType = assets.GroupBy(a => a.AssetType);
+            var result = new List<AssetTypeAnalytics>(groupByAssetType.Count());
+            foreach (var group in groupByAssetType)
+            {
+                var groupTotal = assetCalculator.Sum(group.ToList());
+
+                result.Add(new AssetTypeAnalytics()
+                {
+                    AssetType = group.Key,
+                    PortfolioAmount = groupTotal,
+                    PortfolioPercent = (float)(groupTotal / totalPortfolioValue)
+                });
+            }
+
+            return result;
         }
 
-        private List<RiskLevelAnalytics> GenerateRiskLevelAnalytics(List<Asset> assets)
+        private List<RiskLevelAnalytics> GenerateRiskLevelAnalytics(AssetCalculator assetCalculator, List<Asset> assets, decimal totalPortfolioValue)
         {
-            throw new NotImplementedException();
-        }
+            var groupByRiskLevel = assets.GroupBy(a => a.RiskLevel);
+            var result = new List<RiskLevelAnalytics>(groupByRiskLevel.Count());
+            foreach (var group in groupByRiskLevel)
+            {
+                var groupTotal = assetCalculator.Sum(group.ToList());
 
-        private List<TransactionTypeAnalytics> GenerateTransactionTypeAnalytics(List<Asset> assets)
-        {
-            throw new NotImplementedException();
+                result.Add(new RiskLevelAnalytics()
+                {
+                    RiskLevel = group.Key,
+                    PortfolioAmount = groupTotal,
+                    PortfolioPercent = (float)(groupTotal / totalPortfolioValue)
+                });
+            }
+
+            return result;
         }
     }
 }

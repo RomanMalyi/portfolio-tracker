@@ -15,34 +15,50 @@ namespace PortfolioTracker.Market.Api.Controllers
             this.marketService = marketService;
         }
 
-        /// <summary>
-        /// Get all accounts for user by id
-        /// </summary>
         [HttpGet]
         [ProducesResponseType(typeof(PolygonResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll([FromQuery] int skip = 0, [FromQuery] int take = 10)
         {
-            return Ok(marketService.Get().Skip(skip).Take(take));
+            return Ok((await marketService.Get()).Skip(skip).Take(take));
         }
 
-        /// <summary>
-        /// Get all accounts for user by id
-        /// </summary>
         [HttpGet("{ticker}")]
         [ProducesResponseType(typeof(PolygonResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get([FromRoute] string ticker)
         {
-            return Ok(marketService.Get().FirstOrDefault(e=>e.Ticker.Contains(ticker)));
+            return Ok((await marketService.Get()).FirstOrDefault(e => e.Ticker.Contains(ticker)));
         }
 
-        /// <summary>
-        /// Get all accounts for user by id
-        /// </summary>
         [HttpGet("currencies")]
-        [ProducesResponseType(typeof(CurrencyRate), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<CurrencyRate>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetCurrencies()
         {
-            return Ok(marketService.GetCurrencies());
+            return Ok(await marketService.GetCurrencies());
+        }
+
+        [HttpGet("tickers")]
+        [ProducesResponseType(typeof(List<ShortResponse>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Get([FromQuery] string[] tickers)
+        {
+            var market = await marketService.Get();
+            var result = new List<ShortResponse>(tickers.Length);
+            foreach (var ticker in tickers)
+            {
+                if (ticker != null)
+                {
+                    var marketValue = market.FirstOrDefault(e => e.Ticker.Contains(ticker));
+                    if(marketValue!=null)
+                    {
+                        result.Add(new ShortResponse()
+                        {
+                            Ticker = ticker,
+                            ClosePrice = marketValue.ClosePrice
+                        });
+                    }
+                }
+            }
+
+            return Ok(result);
         }
     }
 }

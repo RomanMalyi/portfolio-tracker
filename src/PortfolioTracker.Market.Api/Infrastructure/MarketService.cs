@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
+using PortfolioTracker.Events.Common;
 using PortfolioTracker.Market.Api.Dto;
 
 namespace PortfolioTracker.Market.Api.Infrastructure
@@ -11,25 +12,40 @@ namespace PortfolioTracker.Market.Api.Infrastructure
         private readonly Settings settings;
 
         //TODO: add cache
-        private readonly List<PolygonElement> polygonElements;
-        private readonly List<CurrencyRate> currencies;
+        private List<PolygonElement>? polygonElements;
+        private List<CurrencyRate>? currencies;
 
         public MarketService(IOptions<Settings> polygonSettings, IHttpClientFactory httpClientFactory)
         {
             this.settings = polygonSettings.Value;
             this.httpClientFactory = httpClientFactory;
-
-            polygonElements = GetMarket().GetAwaiter().GetResult();
-            currencies = GetMonobankCurrencies().GetAwaiter().GetResult();
         }
 
-        public List<PolygonElement> Get()
+        public async Task<List<PolygonElement>> Get()
         {
+            if (polygonElements != null) return polygonElements;
+
+            polygonElements = await GetMarket();
             return polygonElements;
         }
 
-        public List<CurrencyRate> GetCurrencies()
+        public async Task<List<CurrencyRate>> GetCurrencies()
         {
+            if (currencies != null) return currencies;
+
+            var monoCurrencies = await GetMonobankCurrencies();
+            currencies = monoCurrencies;
+
+            //TODO: delete it when mono will return functionality for uah to usd converting
+            var usdToUah = monoCurrencies.First(c => c.CurrencyA.Equals(Currency.USD) && c.CurrencyB.Equals(Currency.UAH));
+            currencies.Add(new CurrencyRate()
+            {
+                CurrencyA = Currency.UAH,
+                CurrencyB = Currency.USD,
+                RateBuy = 1/usdToUah.RateBuy,
+                RateSell = 1/usdToUah.RateSell
+            });
+
             return currencies;
         }
 
@@ -51,9 +67,8 @@ namespace PortfolioTracker.Market.Api.Infrastructure
 
             if (result == null) return new List<CurrencyRate>();
 
-           return result.Where(CurrencyMapper.CanMap).Select(CurrencyMapper.Map).ToList();
+            return result.Where(CurrencyMapper.CanMap).Select(CurrencyMapper.Map).ToList();
         }
-
 
         private async Task<PolygonResponse> GetInfoFromPolygon(string uri)
         {
@@ -81,9 +96,10 @@ namespace PortfolioTracker.Market.Api.Infrastructure
 
         private async Task<List<PolygonElement>> GetMarket()
         {
-            string date = DateTime.Today.AddDays(-1).ToString("yyyy-MM-dd");
+            string date = DateTime.Today.AddDays(-2).ToString("yyyy-MM-dd");
 
             string cryptoUri = $"{settings.PolygonBaseUrl}/v2/aggs/grouped/locale/global/market/crypto/{date}?adjusted=true&apiKey={settings.PolygonApiKey}";
+            //TODO: delete first and lust characters
             var crypto = await GetInfoFromPolygon(cryptoUri);
 
             string stockUri = $"{settings.PolygonBaseUrl}/v2/aggs/grouped/locale/us/market/stocks/{date}?adjusted=true&apiKey={settings.PolygonApiKey}";

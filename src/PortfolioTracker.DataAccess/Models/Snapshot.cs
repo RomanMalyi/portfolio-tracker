@@ -12,6 +12,7 @@ namespace PortfolioTracker.DataAccess.Models
         public string Id { get; set; } = null!;
         public string UserId { get; set; } = null!;
         public DateTimeOffset GenerationTime { get; set; }
+        public decimal TotalAmount { get; set; }
         public List<CurrencyAnalytics> CurrencyAnalytics { get; set; }
         public List<AccountAnalytics> AccountAnalytics { get; set; }
         public List<AssetTypeAnalytics> AssetTypeAnalytics { get; set; }
@@ -30,7 +31,7 @@ namespace PortfolioTracker.DataAccess.Models
     {
         //TODO: think do I need to handle deleted accounts
         public string AccountId { get; set; } = null!;
-        public string Name { get; set; } = null!;
+        public string AccountName { get; set; } = null!;
         public AccountType AccountType { get; set; }
         public decimal PortfolioAmount { get; set; }
         public float PortfolioPercent { get; set; }
