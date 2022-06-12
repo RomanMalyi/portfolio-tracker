@@ -26,10 +26,21 @@ namespace PortfolioTracker.DataAccess.Repositories
 
         public async Task<List<Snapshot>> Get(string userId)
         {
-            return cosmosClient.GetDatabase(DatabaseId).GetContainer(SnapshotsContainerId)
-                .GetItemLinqQueryable<Snapshot>()
-                .Where(s => s.UserId.Equals(userId))
-                .ToList();
+            var iterator = cosmosClient.GetDatabase(DatabaseId).GetContainer(SnapshotsContainerId).GetItemQueryIterator<Snapshot>($"Select * from c",
+                requestOptions: new QueryRequestOptions()
+                {
+                    PartitionKey = new PartitionKey(userId)
+                });
+
+            var results = new List<Snapshot>();
+
+            while (iterator.HasMoreResults)
+            {
+                var result = await iterator.ReadNextAsync();
+                results.AddRange(result.Resource);
+            }
+
+            return results;
         }
     }
 }

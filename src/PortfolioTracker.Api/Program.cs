@@ -22,6 +22,7 @@ builder.Services.AddTransient<UserRepository>();
 builder.Services.AddTransient<AssetRepository>();
 builder.Services.AddTransient<AssetArRepository>();
 builder.Services.AddTransient<TransactionRepository>();
+builder.Services.AddSingleton<SnapshotRepository>();
 
 builder.Services.AddCosmosClient(builder.Configuration);
 

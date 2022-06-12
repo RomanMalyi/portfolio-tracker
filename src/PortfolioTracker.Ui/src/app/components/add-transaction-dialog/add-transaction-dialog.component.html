@@ -10,8 +10,11 @@
     </mat-form-field>
     <br>
     <mat-form-field appearance="fill">
-        <mat-label>Дата</mat-label>
-        <input matInput required [(ngModel)]="transaction.transactionDate">
+        <mat-label>Choose a date</mat-label>
+        <input [(ngModel)]="transaction.transactionDate" matInput [matDatepicker]="picker">
+        <mat-hint>MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
     <br>
     <mat-form-field appearance="fill">

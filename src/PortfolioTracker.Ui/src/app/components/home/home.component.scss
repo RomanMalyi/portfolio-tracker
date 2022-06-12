@@ -13,10 +13,6 @@
     height: 60%;
 }
 
-.home-card {
- width: 300px;
- height: 100px;
-}
 
 .home-bottom-info-box {
 	display: flex;
@@ -25,6 +21,8 @@
 	justify-content: space-between;
 	align-items: flex-end;
 	align-content: center;
+	padding-left: 30px;
+	padding-right: 30px;
 }
 
 .home-main-container {
@@ -35,4 +33,36 @@
 	align-items: stretch;
 	align-content: stretch;
     height: 38%;
+}
+
+.home-card {
+	width: 300px;
+	height: 100px;
+   }
+
+.home-card-ifno
+{
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	justify-content: center;
+	align-items: center;
+	align-content: center;
+}
+
+.card-header {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	justify-content: space-evenly;
+	align-items: center;
+	align-content: center;
+}
+
+.positive {
+    color: green;
+}
+
+.negative {
+    color: red;
 }

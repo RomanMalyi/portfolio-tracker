@@ -28,7 +28,7 @@ namespace PortfolioTracker.ChangeFeed
                 messageBatch.TryAddMessage(new ServiceBusMessage(JsonConvert.SerializeObject(new SnapshotGenerationTrigger()
                 {
                     UserId = userId,
-                    Date = DateTime.Today
+                    Date = DateTime.Parse(sendFrom.ToString())
                 })));
 
                 sendFrom = sendFrom.AddDays(1);

@@ -52,7 +52,8 @@ namespace PortfolioTracker.Market.Api.Controllers
                         result.Add(new ShortResponse()
                         {
                             Ticker = ticker,
-                            ClosePrice = marketValue.ClosePrice
+                            ClosePrice = marketValue.ClosePrice,
+                            Change = (marketValue.ClosePrice - marketValue.OpenPrice)/marketValue.OpenPrice * 100
                         });
                     }
                 }

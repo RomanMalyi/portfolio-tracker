@@ -2,24 +2,50 @@
 
 <div class="home-main-container">
 
-    <div class = "home-cards-box">
-      <mat-card class="home-card">Simple card</mat-card>
-      <mat-card class="home-card">Simple card</mat-card>
-      <mat-card class="home-card">Simple card</mat-card>
-    </div>
-    
-    <div class="home-bottom-info-box">
-        <mat-card>Simple card</mat-card>
-        <mat-card>Simple card</mat-card>
-        <mat-card>Simple card</mat-card>
-        <mat-card>Simple card</mat-card>
-        <mat-card>Simple card</mat-card>
-        <mat-card>Simple card</mat-card>
-        <mat-card>Simple card</mat-card>
-        <mat-card>Simple card</mat-card>
-        <mat-card>Simple card</mat-card>
-        <mat-card>Simple card</mat-card>
-        <mat-card>Simple card</mat-card>
-        <mat-card>Simple card</mat-card>
-    </div>
+  <div class="home-cards-box">
+    <mat-card class="home-card">
+      <mat-card-header class="card-header">
+        <mat-card-title>Portfolio value</mat-card-title>
+        <mat-card-subtitle style="text-align: center;" class="positive">
+          {{analyticsService.analyticsInfo.portfolioChange| number : '.2'}}%</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content class="home-card-ifno">
+        <h1>{{analyticsService.analyticsInfo.currentTotalAmount}}$</h1>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="home-card">
+      <mat-card-header class="home-card-ifno">
+        <mat-card-title>General info</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Number of accounts:<b style="padding-left: 5px;">{{analyticsService.analyticsInfo.numberOfAccounts}}</b></p>
+        <p>Number of asset types:<b style="padding-left: 5px;">{{analyticsService.analyticsInfo.numberOfAsstTypes}}</b>
+        </p>
+        <p></p>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="home-card">
+      <mat-card-header class="home-card-ifno">
+        <mat-card-title>Worth noting</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>The highest level of risk:<b
+            style="padding-left: 5px;">{{analyticsService.analyticsInfo.highestLevelOfRisk}}</b></p>
+        <p>The most popular currency:<b
+            style="padding-left: 5px;">{{analyticsService.analyticsInfo.mostPopularCurrency}}</b></p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="home-bottom-info-box">
+    <mat-card *ngFor="let item of analyticsService.marketInfo;">
+      <mat-card-header>
+        <mat-card-title>{{item.ticker}}</mat-card-title>
+        <mat-card-subtitle>{{item.closePrice}}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content class="home-card-ifno">
+        {{item.change| number : '.2'}}%
+      </mat-card-content>
+    </mat-card>
+  </div>
 </div>

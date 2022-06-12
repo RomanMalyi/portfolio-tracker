@@ -21,7 +21,8 @@ namespace PortfolioTracker.Events
             ToAssetId = toAssetId;
             ExchangeRate = exchangeRate;
             Description = description;
-            CreatedAt = createdAt;
+            //TODO: verify this approach
+            CreatedAt = transactionDate;
         }
 
         public string Id { get; }

@@ -4,5 +4,6 @@
     {
         public string Ticker { get; set; } = null!;
         public decimal ClosePrice { get; set; }
+        public decimal Change { get; set; }
     }
 }
