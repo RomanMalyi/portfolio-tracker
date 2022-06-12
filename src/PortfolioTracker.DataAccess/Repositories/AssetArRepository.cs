@@ -1,4 +1,6 @@
-﻿using PortfolioTracker.Domain;
+﻿using System;
+using System.Collections.Generic;
+using PortfolioTracker.Domain;
 using PortfolioTracker.EventStore;
 using PortfolioTracker.EventStore.Core;
 using System.Linq;
@@ -21,6 +23,14 @@ namespace PortfolioTracker.DataAccess.Repositories
             EventStream<IStoredEvent> stream = await eventStore.LoadEventStream(assetId);
 
             return !stream.Events.Any() ? Maybe<AssetAR>.None : new AssetAR(stream.Events, ExpectedPosition.GetPosition(stream.Position));
+        }
+
+        public async Task<Maybe<AssetAR>> GetByDate(string assetId, DateTimeOffset dateTime)
+        {
+            EventStream<IStoredEvent> stream = await eventStore.LoadEventStream(assetId);
+            List<IStoredEvent> streamPart = stream.Events.Where(e => e.CreatedAt <= dateTime).ToList();
+
+            return !stream.Events.Any() ? Maybe<AssetAR>.None : new AssetAR(streamPart, streamPart.Count);
         }
 
         public async Task Upsert(AssetAR assetAr)

@@ -7,8 +7,12 @@ using PortfolioTracker.Events;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Azure.Cosmos.Serialization.HybridRow.Layouts;
+using CSharpFunctionalExtensions;
+using Microsoft.Azure.Cosmos;
 using PortfolioTracker.DataAccess;
+using PortfolioTracker.Domain;
+using PortfolioTracker.Domain.Models;
+using PortfolioTracker.EventStore.Core;
 
 namespace PortfolioTracker.ChangeFeed
 {
@@ -31,9 +35,20 @@ namespace PortfolioTracker.ChangeFeed
                     string sqlConnectionString = Environment.GetEnvironmentVariables()["SqlDbConnectionString"] as string;
                     if (sqlConnectionString == null) throw new Exception("SqlDbConnectionString not found");
 
+                    string serviceBusConnection = Environment.GetEnvironmentVariables()["ServiceBusConnectionString"] as string;
+                    if (sqlConnectionString == null) throw new Exception("ServiceBusConnectionString not found");
+
+                    string cosmosConnectionString = Environment.GetEnvironmentVariables()["CosmosDbConnectionString"] as string;
+                    using CosmosClient cosmosClient = new CosmosClient(cosmosConnectionString);
+                    SnapshotRepository snapshotRepository = new SnapshotRepository(cosmosClient);
+                    var eventStoreSerializer = new JsonStoredEventSerializer(typeof(AssetCreated).Assembly);
+                    var eventStore = new AssetEventStore(eventStoreSerializer, cosmosClient.GetDatabase("PortfolioTracker"));
+                    AssetArRepository assetArRepository = new(eventStore);
+
                     SqlDatabase sqlDatabase = new SqlDatabase(sqlConnectionString);
                     AssetRepository assetRepository = new(sqlDatabase);
                     TransactionRepository transactionRepository = new(sqlDatabase);
+                    SnapshotTriggerSender snapshotTriggerSender = new SnapshotTriggerSender(serviceBusConnection);
 
                     foreach (var document in input)
                     {
@@ -43,21 +58,26 @@ namespace PortfolioTracker.ChangeFeed
                         switch (@event.Name)
                         {
                             case nameof(AssetCreated):
-                            {
-                                AssetCreated created = JsonConvert.DeserializeObject<AssetCreated>(@event.Data.ToString()!);
-                                await assetRepository.Create(created!);
-                                break;
-                            }
+                                {
+                                    AssetCreated created = JsonConvert.DeserializeObject<AssetCreated>(@event.Data.ToString()!);
+                                    await assetRepository.Create(created!);
+                                    await snapshotTriggerSender.SendTriggersFromDate(created.CreatedAt, created.UserId);
+                                    break;
+                                }
                             case nameof(TransactionAdded):
-                            {
-                                TransactionAdded added = JsonConvert.DeserializeObject<TransactionAdded>(@event.Data.ToString()!);
-                                await transactionRepository.Create(added!);
-                                //TODO: need to update Asset info
-                                //TODO: regenerate snapshot
-                                break;
-                            }
+                                {
+                                    TransactionAdded added = JsonConvert.DeserializeObject<TransactionAdded>(@event.Data.ToString()!);
+                                    await transactionRepository.Create(added!);
+                                    Maybe<AssetAR> ar = await assetArRepository.Get(added.AssetId);
+                                    if (ar.HasNoValue || ar.Value.Get().IsFailure) return;
+                                    Asset asset = ar.Value.Get().Value;
+                                    await assetRepository.Update(asset);
+                                    await snapshotTriggerSender.SendTriggersFromDate(added.TransactionDate, added.UserId);
+                                    break;
+                                }
                         }
                     }
+
                 }
                 catch (Exception e)
                 {

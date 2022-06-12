@@ -82,6 +82,26 @@ namespace PortfolioTracker.DataAccess.Repositories
             return sqlDatabase.ExecuteNonQuery(command, CancellationToken.None);
         }
 
+        public Task Update(Asset asset)
+        {
+            DateTimeOffset createdAt = DateTimeOffset.UtcNow;
+
+            string exchangeTickerColumn = asset.ExchangeTicker != null ? "[ExchangeTicker]=" : string.Empty;
+            string exchangeTickerValue = asset.ExchangeTicker != null ? $"'{asset.ExchangeTicker}'," : string.Empty;
+            string openPriceColumn = asset.OpenPrice != null ? "[OpenPrice]=" : string.Empty;
+            string openPriceValue = asset.OpenPrice != null ? $"{asset.OpenPrice}," : string.Empty;
+            string interestRateColumn = asset.InterestRate != null ? "[InterestRate]=" : string.Empty;
+            string interestRateValue = asset.InterestRate != null ? $"{asset.InterestRate}," : string.Empty;
+
+            var command = @$"Update {AssetTableName} set
+                [AccountId] = '{asset.AccountId}', [UserId]='{asset.UserId}', [Name]='{asset.Name}', [AssetType]='{asset.AssetType}',
+                {exchangeTickerColumn}{exchangeTickerValue} {openPriceColumn}{openPriceValue} {interestRateColumn}{interestRateValue}
+                [Units]={asset.Units}, [Currency]='{asset.Currency}', [RiskLevel]='{asset.RiskLevel}', [CreatedAt]='{createdAt}'
+                where Id = '{asset.Id}'";
+
+            return sqlDatabase.ExecuteNonQuery(command, CancellationToken.None);
+        }
+
         public async Task Delete(string id)
         {
             var command = $"Delete from {AssetTableName} where [Id] = '{id}'";

@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpClient();
 builder.Services.AddOptions<Settings>()
     .Bind(builder.Configuration.GetSection("Settings"));
-builder.Services.AddScoped<MarketService>();
+builder.Services.AddSingleton<MarketService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

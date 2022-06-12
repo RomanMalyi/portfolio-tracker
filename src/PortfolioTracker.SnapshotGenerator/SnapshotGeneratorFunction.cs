@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CSharpFunctionalExtensions;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
@@ -9,7 +10,10 @@ using Newtonsoft.Json;
 using PortfolioTracker.DataAccess;
 using PortfolioTracker.DataAccess.Models;
 using PortfolioTracker.DataAccess.Repositories;
+using PortfolioTracker.Domain;
 using PortfolioTracker.Domain.Models;
+using PortfolioTracker.Events;
+using PortfolioTracker.EventStore.Core;
 
 namespace PortfolioTracker.SnapshotGenerator
 {
@@ -25,17 +29,34 @@ namespace PortfolioTracker.SnapshotGenerator
             string cosmosConnectionString = Environment.GetEnvironmentVariables()["CosmosDbConnectionString"] as string;
             using CosmosClient cosmosClient = new CosmosClient(cosmosConnectionString);
             SnapshotRepository snapshotRepository = new SnapshotRepository(cosmosClient);
+            var eventStoreSerializer = new JsonStoredEventSerializer(typeof(AssetCreated).Assembly);
+            var eventStore = new AssetEventStore(eventStoreSerializer, cosmosClient.GetDatabase("PortfolioTracker"));
+            AssetArRepository assetArRepository = new(eventStore);
 
             string sqlConnectionString = Environment.GetEnvironmentVariables()["SqlDbConnectionString"] as string;
             SqlDatabase sqlDatabase = new SqlDatabase(sqlConnectionString);
             AssetRepository assetRepository = new(sqlDatabase);
             AccountRepository accountRepository = new(sqlDatabase);
 
-            //TODO: if date is not today than we need to query assetAr with date parametr
-            var assetsResult = await assetRepository.GetByUser(trigger.UserId, 0, 10000);
+            var currentAssetsResult = await assetRepository.GetByUser(trigger.UserId, 0, 10000);
             var accountsResult = await accountRepository.Get(trigger.UserId, 0, 1000);
 
-            string[] allUsedTickers = assetsResult.Data.Where(a => a.ExchangeTicker != null).Select(a => a.ExchangeTicker).Distinct().ToArray();
+            List<Asset> assetsForSnapshot = currentAssetsResult.Data;
+            //Get assets for some historical moment
+            if (DateOnly.FromDateTime(trigger.Date) < DateOnly.FromDateTime(DateTime.UtcNow))
+            {
+                List<Task<Maybe<AssetAR>>> oldAssetsTasks = new List<Task<Maybe<AssetAR>>>(currentAssetsResult.Data.Count);
+                oldAssetsTasks.AddRange(currentAssetsResult.Data.Select(currentAsset => assetArRepository.GetByDate(currentAsset.Id, trigger.Date)));
+                List<Maybe<AssetAR>> oldAssets = (await Task.WhenAll(oldAssetsTasks)).ToList();
+                assetsForSnapshot = oldAssets
+                    .Where(e => e.HasValue)
+                    .Select(a => a.Value.Get())
+                    .Where(i=>i.IsSuccess)
+                    .Select(i=>i.Value)
+                    .ToList();
+            }
+
+            string[] allUsedTickers = currentAssetsResult.Data.Where(a => a.ExchangeTicker != null).Select(a => a.ExchangeTicker).Distinct().ToArray();
 
             MarketHelper marketHelper = new();
             List<CurrencyRate> currencies = await marketHelper.GetCurrencies();
@@ -43,7 +64,7 @@ namespace PortfolioTracker.SnapshotGenerator
             AssetCalculator assetCalculator = new AssetCalculator(currencies, marketValues);
 
             //TODO: calculator
-            var totalAssetsValue = assetCalculator.Sum(assetsResult.Data);
+            var totalAssetsValue = assetCalculator.Sum(currentAssetsResult.Data);
 
             Snapshot snapshot = new Snapshot()
             {
@@ -51,10 +72,10 @@ namespace PortfolioTracker.SnapshotGenerator
                 UserId = trigger.UserId,
                 GenerationTime = DateTimeOffset.UtcNow,
                 TotalAmount = totalAssetsValue,
-                CurrencyAnalytics = GenerateCurrencyAnalytics(assetCalculator, assetsResult.Data, totalAssetsValue),
-                AccountAnalytics = GenerateAccountAnalytics(assetCalculator, assetsResult.Data, accountsResult.Data, totalAssetsValue),
-                AssetTypeAnalytics = GenerateAssetTypeAnalytics(assetCalculator, assetsResult.Data, totalAssetsValue),
-                RiskLevelAnalytics = GenerateRiskLevelAnalytics(assetCalculator, assetsResult.Data, totalAssetsValue)
+                CurrencyAnalytics = GenerateCurrencyAnalytics(assetCalculator, assetsForSnapshot, totalAssetsValue),
+                AccountAnalytics = GenerateAccountAnalytics(assetCalculator, assetsForSnapshot, accountsResult.Data, totalAssetsValue),
+                AssetTypeAnalytics = GenerateAssetTypeAnalytics(assetCalculator, assetsForSnapshot, totalAssetsValue),
+                RiskLevelAnalytics = GenerateRiskLevelAnalytics(assetCalculator, assetsForSnapshot, totalAssetsValue)
             };
 
             await snapshotRepository.Upsert(snapshot);

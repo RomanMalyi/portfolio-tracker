@@ -21,7 +21,7 @@ namespace PortfolioTracker.SnapshotTrigger
             string sqlConnectionString = Environment.GetEnvironmentVariables()["SqlDbConnectionString"] as string;
             SqlDatabase sqlDatabase = new SqlDatabase(sqlConnectionString);
             UserRepository userRepository = new UserRepository();
-            //TODO: add pagination throw all users
+            //TODO: add pagination logic
             var users = await userRepository.Get(0, 1000);
 
             string serviceBusConnection = Environment.GetEnvironmentVariables()["ServiceBusConnectionString"] as string;
