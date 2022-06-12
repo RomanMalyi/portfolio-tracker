@@ -25,7 +25,9 @@ namespace PortfolioTracker.Api.Controllers
             //TODO: get from claims
             string userId = "testUser";
 
-            var snapshots = await snapshotRepository.Get(userId);
+            var snapshots = (await snapshotRepository.Get(userId))
+                .OrderBy(s => s.SnapshotDate)
+                .ToList();
 
             if (snapshots.Count < 2)
                 return Ok(new AnalyticsResponse());
@@ -44,7 +46,7 @@ namespace PortfolioTracker.Api.Controllers
                 NumberOfAccounts = currentSnapshot.AccountAnalytics.Count,
                 NumberOfAsstTypes = currentSnapshot.AssetTypeAnalytics.Count,
                 Snapshots = snapshots,
-                PortfolioChange = (yesterdaySnapshot.TotalAmount - currentSnapshot.TotalAmount) / yesterdaySnapshot.TotalAmount * 100,
+                PortfolioChange = (currentSnapshot.TotalAmount - yesterdaySnapshot.TotalAmount) / yesterdaySnapshot.TotalAmount * 100,
             };
 
             return Ok(result);

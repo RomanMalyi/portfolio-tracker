@@ -28,6 +28,7 @@ export interface Snapshot {
   id: string;
   userId: string;
   generationTime: Date;
+  snapshotDate: Date;
   totalAmount: number;
   currencyAnalytics: CurrencyAnalytic[];
   accountAnalytics: AccountAnalytic[];

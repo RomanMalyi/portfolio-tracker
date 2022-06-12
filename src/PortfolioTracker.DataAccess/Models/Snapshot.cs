@@ -12,6 +12,7 @@ namespace PortfolioTracker.DataAccess.Models
         public string Id { get; set; } = null!;
         public string UserId { get; set; } = null!;
         public DateTimeOffset GenerationTime { get; set; }
+        public DateTime SnapshotDate { get; set; }
         public decimal TotalAmount { get; set; }
         public List<CurrencyAnalytics> CurrencyAnalytics { get; set; }
         public List<AccountAnalytics> AccountAnalytics { get; set; }

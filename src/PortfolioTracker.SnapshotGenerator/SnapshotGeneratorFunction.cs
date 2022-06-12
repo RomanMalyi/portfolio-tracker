@@ -63,14 +63,14 @@ namespace PortfolioTracker.SnapshotGenerator
             List<ShortMarketResponse> marketValues = await marketHelper.GetTickers(allUsedTickers);
             AssetCalculator assetCalculator = new AssetCalculator(currencies, marketValues);
 
-            //TODO: calculator
-            var totalAssetsValue = assetCalculator.Sum(currentAssetsResult.Data);
+            var totalAssetsValue = assetCalculator.Sum(assetsForSnapshot);
 
             Snapshot snapshot = new Snapshot()
             {
                 Id = $"{trigger.UserId}-{trigger.Date:yyyy-MM-dd}",
                 UserId = trigger.UserId,
                 GenerationTime = DateTimeOffset.UtcNow,
+                SnapshotDate = trigger.Date,
                 TotalAmount = totalAssetsValue,
                 CurrencyAnalytics = GenerateCurrencyAnalytics(assetCalculator, assetsForSnapshot, totalAssetsValue),
                 AccountAnalytics = GenerateAccountAnalytics(assetCalculator, assetsForSnapshot, accountsResult.Data, totalAssetsValue),

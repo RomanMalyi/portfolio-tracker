@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { AnalyticsService } from 'src/app/services/analytics.service';
 
@@ -8,7 +9,10 @@ import { AnalyticsService } from 'src/app/services/analytics.service';
 })
 export class HomeComponent implements OnInit {
   options: any;
-  constructor(public analyticsService: AnalyticsService) {}
+  constructor(
+    public analyticsService: AnalyticsService,
+    private datePipe: DatePipe
+  ) {}
 
   ngOnInit(): void {
     this.analyticsService.getMarketValue().subscribe({
@@ -23,6 +27,7 @@ export class HomeComponent implements OnInit {
     this.analyticsService.getAnalyticsInfo().subscribe({
       next: (response) => {
         this.analyticsService.analyticsInfo = response;
+        this.generateChart();
       },
       error: (e) => {
         console.log(e);
@@ -31,15 +36,21 @@ export class HomeComponent implements OnInit {
   }
 
   private generateChart() {
+    const snapshots = this.analyticsService.analyticsInfo.snapshots;
     const xAxisData = [];
-    const data2 = [];
-
-    for (let i = 20; i < 100; i++) {
-      xAxisData.push('5/' + i);
-      data2.push((Math.cos(i / 5) * (i / 5 - 10) + i / 6) * 5);
+    const portfolioValue = [];
+    for (let i = 0; i < snapshots.length; i++) {
+      xAxisData.push(
+        this.datePipe.transform(snapshots[i].snapshotDate, 'MM-dd')
+      );
+      portfolioValue.push(snapshots[i].totalAmount);
     }
 
     this.options = {
+      title: {
+        left: 'center',
+        text: 'Portfolio value',
+      },
       color: {
         type: 'linear',
         x: 0,
@@ -69,9 +80,9 @@ export class HomeComponent implements OnInit {
       yAxis: {},
       series: [
         {
-          name: 'bar2',
+          name: 'Portfolio Value',
           type: 'bar',
-          data: data2,
+          data: portfolioValue,
           animationDelay: (idx: number) => idx * 10 + 100,
         },
       ],

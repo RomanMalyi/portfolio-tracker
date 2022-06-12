@@ -34,6 +34,8 @@ import { AssetsComponent } from './components/assets/assets.component';
 import { AddTransactionDialogComponent } from './components/add-transaction-dialog/add-transaction-dialog.component';
 import { TransactionsComponent } from './components/transactions/transactions.component';
 
+import { DatePipe } from '@angular/common';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -74,7 +76,7 @@ import { TransactionsComponent } from './components/transactions/transactions.co
     }),
     HttpClientModule,
   ],
-  providers: [],
+  providers: [DatePipe],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
