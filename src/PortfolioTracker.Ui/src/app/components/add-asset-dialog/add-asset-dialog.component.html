@@ -1,0 +1,85 @@
+<h1 mat-dialog-title>Новий актив</h1>
+<div mat-dialog-content>
+  <mat-stepper [linear]="false" #stepper>
+    <mat-step [stepControl]="generalFormGroup">
+      <form [formGroup]="generalFormGroup">
+        <ng-template matStepLabel>Основні дані</ng-template>
+        <mat-form-field appearance="fill">
+          <mat-label>Назва активу</mat-label>
+          <input matInput placeholder="Назва" formControlName="nameCtrl" required>
+        </mat-form-field>
+        <br>
+        <mat-form-field appearance="fill">
+          <mat-label>Тип активу</mat-label>
+          <mat-select formControlName="typeCtrl" required>
+            <mat-option *ngFor="let assetType of assetTypes" [value]="assetType">
+              {{assetType}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div>
+          <button (click)="addAsset()" mat-button matStepperNext>Далі</button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step [stepControl]="financeFormGroup" label="Фінансові параметри">
+      <form [formGroup]="financeFormGroup">
+        <mat-form-field appearance="fill">
+          <mat-label>Валюта</mat-label>
+          <mat-select formControlName="currencyCtrl" required>
+            <mat-option *ngFor="let currency of currencies" [value]="currency">
+              {{currency}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <br>
+        <mat-form-field appearance="fill">
+          <mat-label>Кількість</mat-label>
+          <input matInput formControlName="unitsCtrl" placeholder="Інвестовано" required>
+        </mat-form-field>
+        <div *ngIf="showTickerFields()">
+          <br>
+          <mat-form-field appearance="fill">
+            <mat-label>Тикер</mat-label>
+            <input matInput formControlName="exchangeTickerCtrl" placeholder="Тикер" required>
+          </mat-form-field>
+          <br>
+          <mat-form-field appearance="fill">
+            <mat-label>Ціна відкриття</mat-label>
+            <input matInput formControlName="openPriceCtrl" placeholder="Ціна відкриття" required>
+          </mat-form-field>
+        </div>
+        <div>
+          <button mat-button matStepperPrevious>Назад</button>
+          <button (click)="addAsset()" mat-button matStepperNext>Далі</button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step [stepControl]="additionalFormGroup">
+      <form [formGroup]="additionalFormGroup">
+        <ng-template matStepLabel>Додаткові параметри</ng-template>
+        <mat-form-field appearance="fill">
+          <mat-label>Рівень ризику</mat-label>
+          <mat-select formControlName="riskLevelCtrl" required>
+            <mat-option *ngFor="let riskLevel of riskLevels" [value]="riskLevel">
+              {{riskLevel}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <br>
+        <mat-form-field appearance="fill">
+          <mat-label>Дохідність %</mat-label>
+          <input matInput formControlName="interestRateCtrl" placeholder="Дохідність %" required>
+        </mat-form-field>
+        <div>
+          <button mat-button matStepperPrevious>Назад</button>
+          <button mat-button (click)="stepper.reset()">Скинути</button>
+        </div>
+      </form>
+    </mat-step>
+  </mat-stepper>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Відмінити</button>
+  <button mat-button (click)="addAsset()" [mat-dialog-close]="createdAsset" cdkFocusInitial>Зберегти</button>
+</div>

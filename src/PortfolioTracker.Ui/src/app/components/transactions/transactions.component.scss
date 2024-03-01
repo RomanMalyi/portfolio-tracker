@@ -1,0 +1,40 @@
+.main-container {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+	align-content: stretch;
+    height: 90%;
+}
+
+.table-container {
+    width: 90%;
+    position: relative;
+    padding-top: 10px;
+}
+
+.table {
+    width: 100%;
+}
+
+.card {
+    width: 90%;
+}
+
+.button {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: flex-end;
+	align-items: center;
+	align-content: center;
+    width: 100%;
+    padding-top: 20px;
+    padding-bottom: 10px;
+}
+
+.header {
+    text-align: center;
+    padding-top: 50px;
+}

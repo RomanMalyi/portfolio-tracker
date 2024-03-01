@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.123" />
+    <PackageReference Include="dbup-sqlserver" Version="4.6.0" />
+    <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.27.2" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
+    <PackageReference Include="System.Reflection.Metadata" Version="6.0.1" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="AppendEvents.js" />
+	</ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PortfolioTracker.Domain\PortfolioTracker.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
